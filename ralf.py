@@ -61,21 +61,21 @@ async def on_message(message):
   if message.content.startswith('?roll20'):
     await message.channel.send('https://app.roll20.net/join/8055988/5rQ7CQ')
 
-  long_rim_content = [
-    'atlas',
-    'caliban',
-    'lich',
-    'kobold',
-    'zheng',
-    'sunzi',
-    'black thumb',
-    'spaceborn',
-    'space born',
-    'long rim'
-  ]
+  # long_rim_content = [
+  #   'atlas',
+  #   'caliban',
+  #   'lich',
+  #   'kobold',
+  #   'zheng',
+  #   'sunzi',
+  #   'black thumb',
+  #   'spaceborn',
+  #   'space born',
+  #   'long rim'
+  # ]
 
-  if any(reference in message.content.lower() for reference in long_rim_content):
-    await message.add_reaction("<:no:748701817466257561>")
+  # if any(reference in message.content.lower() for reference in long_rim_content):
+  #   await message.add_reaction("<:no:748701817466257561>")
 
   cowboy_content = [
     'cowboy',
@@ -93,6 +93,6 @@ async def on_message(message):
   ]
 
   if any(reference in message.content.lower() for reference in cowboy_content):
-    await message.add_reaction("<:Cowboy:749333761585578004>")
+    await message.add_reaction("<:cube:744345789802741900>")
 
 client.run(os.environ['RALF_JR_DISCORD_TOKEN'])
