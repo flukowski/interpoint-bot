@@ -1,4 +1,6 @@
 import os
+import re
+import asyncio
 import discord
 
 client = discord.Client()
@@ -47,6 +49,10 @@ async def on_message(message):
 
     if set(author_roles) & set(mission_roles):
       await message.add_reaction("\U000023F0")
+    else:
+      mission_numbers = re.findall(r"(?<![a-zA-Z0-9])[1-7](?![a-zA-Z0-9])", message.content.lower())
+      if mission_numbers:
+        await asyncio.wait([add_mission_reaction(message, number) for number in mission_numbers])
 
   if message.content.startswith('?youtube'):
     await message.channel.send('https://www.youtube.com/channel/UCV88ITZdBYnLpRGDFYXymKA')
@@ -96,5 +102,9 @@ async def on_message(message):
 
   if any(reference in message.content.lower() for reference in cowboy_content):
     await message.add_reaction("<:cube:744345789802741900>")
+
+async def add_mission_reaction(message, number):
+  reaction_dict = { '1': "1️⃣", '2': "2️⃣", '3': "3️⃣", '4': "4️⃣", '5': "5️⃣", '6': "6️⃣", '7': "7️⃣"  }
+  await message.add_reaction(reaction_dict.get(number))
 
 client.run(os.environ['RALF_JR_DISCORD_TOKEN'])
