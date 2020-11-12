@@ -14,13 +14,15 @@ async def on_member_join(member):
   announce_channel = client.get_channel(734729551388737560)
   schedule_channel = client.get_channel(734729609182052423)
 
-  message = 'Hey {0.mention} welcome to Interpoint Station :tm:\n\n' \
-    'Visit Official Stuff all the way up there for the rundown\n\n' \
-    'If you\'re a trained Lancer and ready to Fly visit {3.mention} and' \
-    ' {1.mention} and get your pilot code from COMP/CON ready' \
-    '\n\nIf the schedule is full (check {2.mention}  to see if it is)' \
+  message = 'Hey {0.mention}, welcome to Interpoint Station :tm:\n\n' \
+    'This is a server for playing pick up games of Lancer RPG.' \
+    ' Visit Official Stuff all the way up there for the rundown.\n\n' \
+    'If you\'re a trained Lancer and ready to fly, visit {3.mention} and' \
+    ' {1.mention} and get your pilot code from COMP/CON ready.' \
+    '\n\nIf the schedule is full (check {2.mention} to see if it is)' \
     ' you can still apply for reserves for a chance if a pilot goes AWOL' \
-    '\n\nIf you ever need help, just ask any of us, we\'re pretty friendly' \
+    'or set up a character and join the RP till Sunday when the schedule opens up again.' \
+    '\n\nIf you ever need help, just ask any of us, we\'re pretty friendly.' \
     '\n\nWe hope you enjoy your stay at Interpoint Station:tm:'
 
   await general_channel.send(message.format(member, example_channel, announce_channel, schedule_channel))
