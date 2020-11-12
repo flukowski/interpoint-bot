@@ -50,7 +50,7 @@ async def on_message(message):
     if set(author_roles) & set(mission_roles):
       await message.add_reaction("\U000023F0")
     else:
-      mission_numbers = re.findall(r"(?<![a-zA-Z0-9])[1-7](?![a-zA-Z0-9])", message.content.lower())
+      mission_numbers = re.findall(r"(?<![a-zA-Z0-9\-])[1-7](?![a-zA-Z0-9\-])", message.content.lower())
       if mission_numbers:
         await asyncio.wait([add_mission_reaction(message, number) for number in mission_numbers])
 
