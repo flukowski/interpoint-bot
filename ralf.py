@@ -3,10 +3,13 @@ import os
 import re
 import asyncio
 import discord
+from firebase import firebase
 
 intents = discord.Intents.default()
 intents.members = True
 client = discord.Client(intents=intents)
+
+firebase = firebase.FirebaseApplication('https://interpoint-384c3.firebaseio.com', authentication=None)
 
 @client.event
 async def on_ready():
