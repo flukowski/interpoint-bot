@@ -3,13 +3,22 @@ import os
 import re
 import asyncio
 import discord
-from firebase import firebase
+import pyrebase
 
 intents = discord.Intents.default()
 intents.members = True
 client = discord.Client(intents=intents)
 
-firebase = firebase.FirebaseApplication('https://interpoint-384c3.firebaseio.com', authentication=None)
+config = {
+  "apiKey": "AIzaSyD3F047ArxIeiP3DVGREJm26lKuKjn234Q",
+  "authDomain": "interpoint-384c3.firebaseapp.com",
+  "databaseURL": "https://interpoint-384c3.firebaseio.com",
+  "storageBucket": "interpoint-384c3.appspot.com"
+}
+
+firebase = pyrebase.initialize_app(config)
+firebase_namespace = os.getenv('FIREBASE_NAMESPACE', default='interpoint-test')
+database = firebase.database()
 
 @client.event
 async def on_ready():
@@ -102,6 +111,8 @@ async def handle_pilot_application(message):
 
       mission_numbers = re.findall(r"(?<![a-zA-Z0-9\-])[1-7](?![a-zA-Z0-9\-])", message.content.lower())
       if mission_numbers:
+        data = { "mission_numbers": mission_numbers }
+        store_user_data(message.author, data)
         await asyncio.wait([add_mission_reaction(message, number) for number in mission_numbers])
 
 async def remove_reaction(reaction):
@@ -111,5 +122,8 @@ async def remove_reaction(reaction):
 async def add_mission_reaction(message, number):
   reaction_dict = { '1': "1️⃣", '2': "2️⃣", '3': "3️⃣", '4': "4️⃣", '5': "5️⃣", '6': "6️⃣", '7': "7️⃣"  }
   await message.add_reaction(reaction_dict.get(number))
+
+def store_user_data(user, data):
+  database.child(firebase_namespace).child("users").child(user.id).set(data)
 
 client.run(os.environ['RALF_JR_DISCORD_TOKEN'])
