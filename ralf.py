@@ -1,9 +1,12 @@
+# import pdb
 import os
 import re
 import asyncio
 import discord
 
-client = discord.Client()
+intents = discord.Intents.default()
+intents.members = True
+client = discord.Client(intents=intents)
 
 @client.event
 async def on_ready():
@@ -35,24 +38,7 @@ async def on_message(message):
     return
 
   if message.channel.name == 'pilot-application':
-    author_roles = list(map(lambda x: x.name, message.author.roles))
-
-    mission_roles = [
-      "Mission1 Crew",
-      "Mission2 Crew",
-      "Mission3 Crew",
-      "Mission4 Crew",
-      "Mission5 Crew",
-      "Mission6 Crew",
-      "Mission7 Crew"
-    ]
-
-    if set(author_roles) & set(mission_roles):
-      await message.add_reaction("\U000023F0")
-    else:
-      mission_numbers = re.findall(r"(?<![a-zA-Z0-9\-])[1-7](?![a-zA-Z0-9\-])", message.content.lower())
-      if mission_numbers:
-        await asyncio.wait([add_mission_reaction(message, number) for number in mission_numbers])
+    await handle_pilot_application(message)
 
   if message.content.startswith('?youtube'):
     await message.channel.send('https://www.youtube.com/channel/UCV88ITZdBYnLpRGDFYXymKA')
@@ -68,22 +54,6 @@ async def on_message(message):
 
   if message.content.startswith('?roll20'):
     await message.channel.send('https://app.roll20.net/join/8055988/5rQ7CQ')
-
-  # long_rim_content = [
-  #   'atlas',
-  #   'caliban',
-  #   'lich',
-  #   'kobold',
-  #   'zheng',
-  #   'sunzi',
-  #   'black thumb',
-  #   'spaceborn',
-  #   'space born',
-  #   'long rim'
-  # ]
-
-  # if any(reference in message.content.lower() for reference in long_rim_content):
-  #   await message.add_reaction("<:no:748701817466257561>")
 
   cowboy_content = [
     'cowboy',
@@ -102,6 +72,38 @@ async def on_message(message):
 
   if any(reference in message.content.lower() for reference in cowboy_content):
     await message.add_reaction("<:cube:744345789802741900>")
+
+@client.event
+async def on_message_edit(_, message):
+  await handle_pilot_application(message)
+
+async def handle_pilot_application(message):
+  if message.channel.name == 'pilot-application':
+    author_roles = list(map(lambda x: x.name, message.author.roles))
+
+    mission_roles = [
+      "Mission1 Crew",
+      "Mission2 Crew",
+      "Mission3 Crew",
+      "Mission4 Crew",
+      "Mission5 Crew",
+      "Mission6 Crew",
+      "Mission7 Crew"
+    ]
+
+    if set(author_roles) & set(mission_roles):
+      await message.add_reaction("\U000023F0") # Alarm clock
+    else:
+      if message.reactions:
+        await asyncio.wait([remove_reaction(reaction) for reaction in message.reactions])
+
+      mission_numbers = re.findall(r"(?<![a-zA-Z0-9\-])[1-7](?![a-zA-Z0-9\-])", message.content.lower())
+      if mission_numbers:
+        await asyncio.wait([add_mission_reaction(message, number) for number in mission_numbers])
+
+async def remove_reaction(reaction):
+  if reaction.me:
+    await reaction.remove(client.user)
 
 async def add_mission_reaction(message, number):
   reaction_dict = { '1': "1️⃣", '2': "2️⃣", '3': "3️⃣", '4': "4️⃣", '5': "5️⃣", '6': "6️⃣", '7': "7️⃣"  }
