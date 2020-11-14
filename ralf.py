@@ -1,6 +1,7 @@
 # import pdb
 import os
 import re
+import time
 import asyncio
 import discord
 import pyrebase
@@ -91,7 +92,8 @@ async def on_message_edit(_, message):
 
 async def handle_pilot_application(message):
   if message.channel.name == 'pilot-application':
-    author_roles = list(map(lambda x: x.name, message.author.roles))
+    author = message.author
+    author_roles = list(map(lambda x: x.name, author.roles))
 
     mission_roles = [
       "Mission1 Crew",
@@ -110,9 +112,15 @@ async def handle_pilot_application(message):
         await asyncio.wait([remove_reaction(reaction) for reaction in message.reactions])
 
       mission_numbers = re.findall(r"(?<![a-zA-Z0-9\-])[1-7](?![a-zA-Z0-9\-])", message.content.lower())
+      pilot_code = re.search(r"[a-z0-9]{32}", message.content.lower())
       if mission_numbers:
-        data = { "mission_numbers": mission_numbers }
-        store_user_data(message.author, data)
+        store_user_data(author, {
+          "name": author.name,
+          "mention": author.mention,
+          "mission_numbers": mission_numbers,
+          "pilot_code": pilot_code and pilot_code.group(0),
+          "timestamp": int(time.time())
+        })
         await asyncio.wait([add_mission_reaction(message, number) for number in mission_numbers])
 
 async def remove_reaction(reaction):
@@ -124,6 +132,14 @@ async def add_mission_reaction(message, number):
   await message.add_reaction(reaction_dict.get(number))
 
 def store_user_data(user, data):
+  object = database.child(firebase_namespace).child("users").child(user.id).get().val()
+
+  if object:
+    if 'timestamp' in object:
+      data['timestamp'] = object['timestamp']
+
+  print(data)
+
   database.child(firebase_namespace).child("users").child(user.id).set(data)
 
 client.run(os.environ['RALF_JR_DISCORD_TOKEN'])
