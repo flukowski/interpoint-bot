@@ -53,6 +53,9 @@ async def on_message(message):
   if message.channel.name == 'pilot-application':
     await handle_pilot_application(message)
 
+  if message.content.startswith('?schedule'):
+    await evaluate_schedule(message)
+
   if message.content.startswith('?youtube'):
     await message.channel.send('https://www.youtube.com/channel/UCV88ITZdBYnLpRGDFYXymKA')
 
@@ -130,6 +133,22 @@ async def remove_reaction(reaction):
 async def add_mission_reaction(message, number):
   reaction_dict = { '1': "1️⃣", '2': "2️⃣", '3': "3️⃣", '4': "4️⃣", '5': "5️⃣", '6': "6️⃣", '7': "7️⃣"  }
   await message.add_reaction(reaction_dict.get(number))
+
+async def evaluate_schedule(message):
+  if message.author.id != 202688077351616512:
+    return await message.channel.send("You are not worthy!")
+
+  schedule_message = ''
+  applicants = database.child(firebase_namespace).child("users").order_by_child("timestamp").get().val()
+
+  for key, applicant in applicants.items():
+    schedule_message += applicant['mention']
+    schedule_message += ' '
+    for mission_number in applicant['mission_numbers']:
+      schedule_message += mission_number
+      schedule_message += ' '
+
+  await message.channel.send(schedule_message)
 
 def store_user_data(user, data):
   object = database.child(firebase_namespace).child("users").child(user.id).get().val()
