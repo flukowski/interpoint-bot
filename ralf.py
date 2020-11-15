@@ -118,7 +118,7 @@ async def handle_pilot_application(message):
       pilot_code = re.search(r"[a-z0-9]{32}", message.content.lower())
       if mission_numbers:
         store_user_data(author, {
-          "name": author.name,
+          "name": author.nick,
           "mention": author.mention,
           "mission_numbers": mission_numbers,
           "pilot_code": pilot_code and pilot_code.group(0),
@@ -138,15 +138,27 @@ async def evaluate_schedule(message):
   if message.author.id != 202688077351616512:
     return await message.channel.send("You are not worthy!")
 
-  schedule_message = ''
+  schedule = [ [ None for y in range( 4 ) ] for x in range( 7 ) ]
+
+  schedule_message = 'Schedule evaluated.\n'
   applicants = database.child(firebase_namespace).child("users").order_by_child("timestamp").get().val()
 
+
   for key, applicant in applicants.items():
-    schedule_message += applicant['mention']
-    schedule_message += ' '
     for mission_number in applicant['mission_numbers']:
-      schedule_message += mission_number
-      schedule_message += ' '
+      for idx, spot in enumerate(schedule[int(mission_number) - 1]):
+        if spot == None:
+          schedule[int(mission_number) - 1][idx] = applicant
+          break
+
+  print(schedule)
+
+  for idx, mission in enumerate(schedule):
+    schedule_message += f"\n\nMission {idx + 1}\n"
+    for idx, spot in enumerate(mission):
+      schedule_message += str(spot and spot['name'])
+      if idx != 3:
+        schedule_message += ', '
 
   await message.channel.send(schedule_message)
 
