@@ -2,7 +2,6 @@
 import os
 import re
 import time
-import sys
 import asyncio
 import discord
 import pyrebase
@@ -21,10 +20,6 @@ config = {
 firebase = pyrebase.initialize_app(config)
 firebase_namespace = os.getenv('FIREBASE_NAMESPACE', default='interpoint-test')
 database = firebase.database()
-
-@client.event
-async def on_error(_):
-  sys.stderr.flush()
 
 @client.event
 async def on_ready():
