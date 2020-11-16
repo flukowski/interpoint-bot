@@ -157,7 +157,7 @@ async def evaluate_schedule(message):
             scheduled = True
             break
 
-  print(schedule)
+  print(schedule, flush=True)
 
   for idx, mission in enumerate(schedule):
     schedule_message += f"\n\nMission {idx + 1}\n"
@@ -175,7 +175,7 @@ def store_user_data(user, data):
     if 'timestamp' in object:
       data['timestamp'] = object['timestamp']
 
-  print(data)
+  print(data, flush=True)
 
   database.child(firebase_namespace).child("users").child(user.id).set(data)
 
