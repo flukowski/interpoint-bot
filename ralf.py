@@ -121,7 +121,7 @@ async def handle_pilot_application(message):
 
       if mission_numbers:
         store_user_data(author, {
-          "name": author.nick,
+          "name": author.nick or author.name,
           "mention": author.mention,
           "mission_numbers": mission_numbers,
           "pilot_code": pilot_code and pilot_code.group(0),
