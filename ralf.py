@@ -56,6 +56,9 @@ async def on_message(message):
   if message.content.startswith('?schedule'):
     await evaluate_schedule(message)
 
+  if message.content.startswith('?v2schedule'):
+    await evaluate_schedule_v2(message)
+
   if message.content.startswith('?youtube'):
     await message.channel.send('https://www.youtube.com/channel/UCV88ITZdBYnLpRGDFYXymKA')
 
@@ -168,6 +171,70 @@ async def evaluate_schedule(message):
 
   await message.channel.send(schedule_message)
 
+async def evaluate_schedule_v2(message):
+  if not (message.author.id == 202688077351616512 or message.author.id == 550523153302945792):
+    return await message.channel.send("You are not worthy!")
+
+  schedule = [ [ None for y in range( 4 ) ] for x in range( 7 ) ]
+
+  schedule_message = 'Schedule evaluated.\n'
+  applicants = database.child(firebase_namespace).child("users").order_by_child("timestamp").get().val()
+
+  scheduled = False
+  for key, applicant in applicants.items():
+    scheduled = False
+    if len(applicant['mission_numbers']) == 1:
+      single_mission_number = applicant['mission_numbers'][0]
+      for idx, spot in enumerate(schedule[int(single_mission_number) - 1]):
+        if spot == None:
+          schedule[int(single_mission_number) - 1][idx] = applicant
+          scheduled = True
+          break
+
+      print(applicant['name'], flush=True)
+      print('Wants in', flush=True)
+      if not scheduled:
+        rescheduled = False
+        for idx, spot in enumerate(schedule[int(single_mission_number) - 1]):
+          if rescheduled:
+            break
+          other_numbers = None
+          for mission_number in spot['mission_numbers']:
+            other_numbers = [x for x in spot['mission_numbers'] if x != single_mission_number]
+            print(spot['name'], flush=True)
+            print('Can move', flush=True)
+            print(other_numbers, flush=True)
+          if other_numbers:
+            for mission_number in other_numbers:
+              for other_idx, spot in enumerate(schedule[int(mission_number) - 1]):
+                if spot == None:
+                  schedule[int(mission_number) - 1][other_idx] = spot
+                  rescheduled = True
+                  break
+              if rescheduled:
+                schedule[int(single_mission_number) - 1][idx] = applicant
+                scheduled = True
+                break
+    else:
+      for mission_number in applicant['mission_numbers']:
+        if not scheduled:
+          for idx, spot in enumerate(schedule[int(mission_number) - 1]):
+            if spot == None:
+              schedule[int(mission_number) - 1][idx] = applicant
+              scheduled = True
+              break
+
+  print(schedule, flush=True)
+
+  for idx, mission in enumerate(schedule):
+    schedule_message += f"\n\nMission {idx + 1}\n"
+    for idx, spot in enumerate(mission):
+      schedule_message += str(spot and spot['name'])
+      if idx != 3:
+        schedule_message += ', '
+
+  await message.channel.send(schedule_message)
+
 def store_user_data(user, data):
   object = database.child(firebase_namespace).child("users").child(user.id).get().val()
 
@@ -191,6 +258,7 @@ def clear_reclamation_mechs(text):
     r"harmon medical organisation collection \d",
     r"39 thieves collection \d",
     r"calavera's bandits collection \d",
+    r"angel vermillion collection \d",
   ]
 
   for mech_pattern in reclamation_mechs:
