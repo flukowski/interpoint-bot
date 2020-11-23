@@ -1,7 +1,6 @@
 # import pdb
 import os
 import re
-import time
 import asyncio
 import discord
 import pyrebase
@@ -128,7 +127,7 @@ async def handle_pilot_application(message):
           "mention": author.mention,
           "mission_numbers": mission_numbers,
           "pilot_code": pilot_code and pilot_code.group(0),
-          "timestamp": int(time.time())
+          "timestamp": message.created_at.timestamp()
         })
         await asyncio.wait([add_mission_reaction(message, number) for number in mission_numbers])
 
