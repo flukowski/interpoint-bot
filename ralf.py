@@ -127,7 +127,7 @@ async def handle_pilot_application(message):
           "mention": author.mention,
           "mission_numbers": mission_numbers,
           "pilot_code": pilot_code and pilot_code.group(0),
-          "timestamp": message.created_at.timestamp()
+          "timestamp": message.created_at.timestamp() * 1000
         })
         await asyncio.wait([add_mission_reaction(message, number) for number in mission_numbers])
 
