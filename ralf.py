@@ -179,8 +179,11 @@ async def evaluate_schedule_v2(message):
   schedule_message = 'Schedule evaluated.\n'
   applicants = database.child(firebase_namespace).child("users").order_by_child("timestamp").get().val()
 
+  filled_count = 0
   scheduled = False
   for key, applicant in applicants.items():
+    if filled_count == 28:
+      break
     scheduled = False
     if len(applicant['mission_numbers']) == 1:
       single_mission_number = applicant['mission_numbers'][0]
@@ -188,6 +191,7 @@ async def evaluate_schedule_v2(message):
         if spot == None:
           schedule[int(single_mission_number) - 1][idx] = applicant
           scheduled = True
+          filled_count += 1
           break
 
       print(applicant['name'], flush=True)
@@ -213,6 +217,7 @@ async def evaluate_schedule_v2(message):
               if rescheduled:
                 schedule[int(single_mission_number) - 1][idx] = applicant
                 scheduled = True
+                filled_count += 1
                 break
     else:
       for mission_number in applicant['mission_numbers']:
@@ -221,6 +226,7 @@ async def evaluate_schedule_v2(message):
             if spot == None:
               schedule[int(mission_number) - 1][idx] = applicant
               scheduled = True
+              filled_count += 1
               break
 
   print(schedule, flush=True)
