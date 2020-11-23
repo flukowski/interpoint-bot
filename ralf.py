@@ -253,6 +253,7 @@ def store_user_data(user, data):
 
 def clear_reclamation_mechs(text):
   reclamation_mechs = [
+    r"#\d+", # Interest token numbers
     r"intercorp neo rnd collection \d",
     r"nyx' pirates collection \d",
     r"red hand collection \d",
