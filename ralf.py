@@ -185,17 +185,17 @@ async def evaluate_schedule_v2(message):
     if filled_count == 28:
       break
     scheduled = False
+    print(applicant['name'], flush=True)
+
     if len(applicant['mission_numbers']) == 1:
       single_mission_number = applicant['mission_numbers'][0]
       for idx, spot in enumerate(schedule[int(single_mission_number) - 1]):
         if spot == None:
           schedule[int(single_mission_number) - 1][idx] = applicant
           scheduled = True
+          print('Gets into {0}'.format(single_mission_number), flush=True)
           filled_count += 1
           break
-
-      print(applicant['name'], flush=True)
-      print('Wants in', flush=True)
       if not scheduled:
         rescheduled = False
         for idx, spot in enumerate(schedule[int(single_mission_number) - 1]):
@@ -204,19 +204,18 @@ async def evaluate_schedule_v2(message):
           other_numbers = None
           for mission_number in spot['mission_numbers']:
             other_numbers = [x for x in spot['mission_numbers'] if x != single_mission_number]
-            print(spot['name'], flush=True)
-            print('Can move', flush=True)
-            print(other_numbers, flush=True)
           if other_numbers:
             for mission_number in other_numbers:
               for other_idx, other_spot in enumerate(schedule[int(mission_number) - 1]):
                 if other_spot == None:
                   schedule[int(mission_number) - 1][other_idx] = spot
                   rescheduled = True
+                  print('Pushes {0} to {1}'.format(spot['name'], mission_number), flush=True)
                   break
               if rescheduled:
                 schedule[int(single_mission_number) - 1][idx] = applicant
                 scheduled = True
+                print('Gets into {0}'.format(single_mission_number), flush=True)
                 filled_count += 1
                 break
     else:
@@ -226,6 +225,7 @@ async def evaluate_schedule_v2(message):
             if spot == None:
               schedule[int(mission_number) - 1][idx] = applicant
               scheduled = True
+              print('Gets into {0}'.format(mission_number), flush=True)
               filled_count += 1
               break
 
