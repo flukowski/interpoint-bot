@@ -206,8 +206,8 @@ async def evaluate_schedule_v2(message):
             print(other_numbers, flush=True)
           if other_numbers:
             for mission_number in other_numbers:
-              for other_idx, spot in enumerate(schedule[int(mission_number) - 1]):
-                if spot == None:
+              for other_idx, other_spot in enumerate(schedule[int(mission_number) - 1]):
+                if other_spot == None:
                   schedule[int(mission_number) - 1][other_idx] = spot
                   rescheduled = True
                   break
