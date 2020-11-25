@@ -4,6 +4,9 @@ import re
 import asyncio
 import discord
 import pyrebase
+import collections
+import numpy
+from numpy.random import choice
 
 intents = discord.Intents.default()
 intents.members = True
@@ -19,6 +22,16 @@ config = {
 firebase = pyrebase.initialize_app(config)
 firebase_namespace = os.getenv('FIREBASE_NAMESPACE', default='interpoint-test')
 database = firebase.database()
+
+mission_roles = [
+  "Mission1 Crew",
+  "Mission2 Crew",
+  "Mission3 Crew",
+  "Mission4 Crew",
+  "Mission5 Crew",
+  "Mission6 Crew",
+  "Mission7 Crew"
+]
 
 @client.event
 async def on_ready():
@@ -48,10 +61,13 @@ async def on_message(message):
     await handle_pilot_application(message)
 
   if message.content.startswith('?schedule'):
-    await evaluate_schedule(message)
-
-  if message.content.startswith('?v2schedule'):
     await evaluate_schedule_v2(message)
+
+  if message.content.startswith('?random-schedule'):
+    await evaluate_schedule_random(message)
+
+  if message.content.startswith('?codes'):
+    await get_codes(message)
 
   if message.content.startswith('?youtube'):
     await message.channel.send('https://www.youtube.com/channel/UCV88ITZdBYnLpRGDFYXymKA')
@@ -95,16 +111,6 @@ async def handle_pilot_application(message):
     author = message.author
     author_roles = list(map(lambda x: x.name, author.roles))
 
-    mission_roles = [
-      "Mission1 Crew",
-      "Mission2 Crew",
-      "Mission3 Crew",
-      "Mission4 Crew",
-      "Mission5 Crew",
-      "Mission6 Crew",
-      "Mission7 Crew"
-    ]
-
     if set(author_roles) & set(mission_roles):
       await message.add_reaction("\U000023F0") # Alarm clock
     else:
@@ -118,6 +124,7 @@ async def handle_pilot_application(message):
 
       if mission_numbers:
         store_user_data(author, {
+          "id": author.id,
           "name": author.nick or author.name,
           "mention": author.mention,
           "mission_numbers": mission_numbers,
@@ -134,32 +141,34 @@ async def add_mission_reaction(message, number):
   reaction_dict = { '1': "1️⃣", '2': "2️⃣", '3': "3️⃣", '4': "4️⃣", '5': "5️⃣", '6': "6️⃣", '7': "7️⃣"  }
   await message.add_reaction(reaction_dict.get(number))
 
-async def evaluate_schedule(message):
+async def evaluate_schedule_random(message):
   if not (message.author.id == 202688077351616512 or message.author.id == 550523153302945792):
     return await message.channel.send("You are not worthy!")
 
-  schedule = [ [ None for y in range( 4 ) ] for x in range( 7 ) ]
+  applicants = database.child(firebase_namespace).child("users").get().val()
 
-  schedule_message = 'Schedule evaluated.\n'
-  applicants = database.child(firebase_namespace).child("users").order_by_child("timestamp").get().val()
+  applicant_ids = []
 
-  scheduled = False
-  for key, applicant in applicants.items():
-    scheduled = False
-    for mission_number in applicant['mission_numbers']:
-      if not scheduled:
-        for idx, spot in enumerate(schedule[int(mission_number) - 1]):
-          if spot == None:
-            schedule[int(mission_number) - 1][idx] = applicant
-            scheduled = True
-            break
+  for id, applicant in applicants.items():
+    applicant_ids.append(id)
 
-  print(schedule, flush=True)
+  lucky_draw = choice(applicant_ids, 45, replace=False)
+
+  final_applicants = collections.OrderedDict()
+
+  for key in lucky_draw:
+    final_applicants[key] = applicants[key]
+
+  print(final_applicants)
+
+  schedule = calculate_schedule(final_applicants)
+
+  schedule_message = 'Random Schedule evaluated.\n'
 
   for idx, mission in enumerate(schedule):
     schedule_message += f"\n\nMission {idx + 1}\n"
     for idx, spot in enumerate(mission):
-      schedule_message += str(spot and spot['name'])
+      schedule_message += str(spot and spot['mention'])
       if idx != 3:
         schedule_message += ', '
 
@@ -169,13 +178,27 @@ async def evaluate_schedule_v2(message):
   if not (message.author.id == 202688077351616512 or message.author.id == 550523153302945792):
     return await message.channel.send("You are not worthy!")
 
-  schedule = [ [ None for y in range( 4 ) ] for x in range( 7 ) ]
-
-  schedule_message = 'Schedule evaluated.\n'
   applicants = database.child(firebase_namespace).child("users").order_by_child("timestamp").get().val()
 
-  filled_count = 0
+  schedule = calculate_schedule(applicants)
+
+  schedule_message = 'Schedule evaluated.\n'
+
+  for idx, mission in enumerate(schedule):
+    schedule_message += f"\n\nMission {idx + 1}\n"
+    for idx, spot in enumerate(mission):
+      schedule_message += str(spot and spot['mention'])
+      if idx != 3:
+        schedule_message += ', '
+
+  await message.channel.send(schedule_message)
+
+def calculate_schedule(applicants):
+  schedule = [ [ None for y in range( 4 ) ] for x in range( 7 ) ]
+  schedule[2][0] = {'id': 166284832073056258, 'mention': '<@!166284832073056258>', 'mission_numbers': ['3'], 'name': 'Damocles (Member of the Board)', 'pilot_code': '2a766b681a5b24aee5ed7a9f4d837d6a', 'timestamp': 1606636738710.0}
+  filled_count = 1
   scheduled = False
+
   for key, applicant in applicants.items():
     if filled_count == 28:
       break
@@ -226,14 +249,7 @@ async def evaluate_schedule_v2(message):
 
   print(schedule, flush=True)
 
-  for idx, mission in enumerate(schedule):
-    schedule_message += f"\n\nMission {idx + 1}\n"
-    for idx, spot in enumerate(mission):
-      schedule_message += str(spot and spot['name'])
-      if idx != 3:
-        schedule_message += ', '
-
-  await message.channel.send(schedule_message)
+  return schedule
 
 def store_user_data(user, data):
   object = database.child(firebase_namespace).child("users").child(user.id).get().val()
@@ -266,5 +282,29 @@ def clear_reclamation_mechs(text):
     text = re.sub(mech_pattern, 'X', text)
 
   return text
+
+async def get_codes(message):
+  if not (message.author.id == 202688077351616512 or message.author.id == 550523153302945792):
+    return await message.channel.send("You are not worthy!")
+
+  applicants = database.child(firebase_namespace).child("users").get().val()
+
+  codes_message = ''
+
+  for role in message.author.guild.roles:
+    if role.name in mission_roles:
+      codes_message += '\n\n'
+      codes_message += role.name
+      codes_message += '\n'
+      for member in role.members:
+        try:
+          codes_message += applicants[str(member.id)]['mention']
+          codes_message += '\n'
+          codes_message += applicants[str(member.id)]['pilot_code']
+          codes_message += '\n'
+        except KeyError:
+          continue
+
+  await message.channel.send(codes_message)
 
 client.run(os.environ['RALF_JR_DISCORD_TOKEN'])
