@@ -27,22 +27,17 @@ async def on_ready():
 @client.event
 async def on_member_join(member):
   general_channel = discord.utils.get(member.guild.channels, name='interpoint-station') or discord.utils.get(member.guild.channels, name='general')
-  example_channel = client.get_channel(734745904468197379)
   announce_channel = client.get_channel(734729551388737560)
-  schedule_channel = client.get_channel(734729609182052423)
 
   message = 'Hey {0.mention}, welcome to Interpoint Station :tm:\n\n' \
-    'This is a server for playing pick up games of Lancer RPG.' \
-    ' Visit Official Stuff all the way up there for the rundown.\n\n' \
-    'If you\'re a trained Lancer and ready to fly, visit {3.mention} and' \
-    ' {1.mention} and get your pilot code from COMP/CON ready.' \
-    '\n\nIf the schedule is full (check {2.mention} to see if it is)' \
-    ' you can still apply for reserves for a chance if a pilot goes AWOL' \
-    'or set up a character and join the RP till Sunday when the schedule opens up again.' \
+    'This is a server for playing pick up games of Lancer RPG. Visit Official Stuff all the way up there for the rundown.' \
+    '\n\nGo right ahead and make a LL0 character for our games utilizing Comp/Con app and its cloud feature. https://compcon.app/#/ Then you can apply using the generated pilot code!' \
+    '\n\nApplications open on Sundays for the following week, I generally run 7 games a week which means that there are 28 spots available making it 112 a month.' \
+    '\n\nIf the schedule is full (check {1.mention} to see if it is) you can still apply for reserves for a chance if a pilot goes AWOL or set up a character and join the RP till Sunday when the schedule opens up again.' \
     '\n\nIf you ever need help, just ask any of us, we\'re pretty friendly.' \
     '\n\nWe hope you enjoy your stay at Interpoint Station:tm:'
 
-  await general_channel.send(message.format(member, example_channel, announce_channel, schedule_channel))
+  await general_channel.send(message.format(member, announce_channel))
 
 @client.event
 async def on_message(message):
