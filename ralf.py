@@ -118,7 +118,7 @@ async def handle_pilot_application(message):
         await asyncio.wait([remove_reaction(reaction) for reaction in message.reactions])
 
       text = message.content.lower()
-      text = clear_reclamation_mechs(text)
+      mech_token, text = get_mech_token(text)
       mission_numbers = re.findall(r"(?<![a-zA-Z0-9\-])[1-7](?![a-zA-Z0-9\-])", text)
       pilot_code = re.search(r"[a-z0-9]{32}", text)
 
@@ -129,6 +129,7 @@ async def handle_pilot_application(message):
           "mention": author.mention,
           "mission_numbers": mission_numbers,
           "pilot_code": pilot_code and pilot_code.group(0),
+          "mech_token": mech_token,
           "timestamp": message.created_at.timestamp() * 1000
         })
         await asyncio.wait([add_mission_reaction(message, number) for number in mission_numbers])
@@ -262,9 +263,8 @@ def store_user_data(user, data):
 
   database.child(firebase_namespace).child("users").child(user.id).set(data)
 
-def clear_reclamation_mechs(text):
+def get_mech_token(text):
   reclamation_mechs = [
-    r"#\d+", # Interest token numbers
     r"intercorp neo rnd collection \d",
     r"nyx' pirates collection \d",
     r"red hand collection \d",
@@ -276,12 +276,22 @@ def clear_reclamation_mechs(text):
     r"39 thieves collection \d",
     r"calavera's bandits collection \d",
     r"angel vermillion collection \d",
+    r"(token|interest) #?\d{1,2} ?[ab]", # Interest token numbers
+    r"(token|interest) .+ ?[ab]",
+    r"#\d{1,2} ?[ab]",
+    r"#\d{1,2}",
   ]
 
-  for mech_pattern in reclamation_mechs:
-    text = re.sub(mech_pattern, 'X', text)
+  token = ''
 
-  return text
+  for mech_pattern in reclamation_mechs:
+    search_result = re.search(mech_pattern, text)
+    if search_result:
+      token += search_result.group(0)
+      token += ' '
+      text = re.sub(mech_pattern, 'X', text)
+
+  return (token, text)
 
 async def get_codes(message):
   if not (message.author.id == 202688077351616512 or message.author.id == 550523153302945792):
