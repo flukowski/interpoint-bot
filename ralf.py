@@ -38,6 +38,14 @@ async def on_ready():
   print('ASSUMING DIRECT CONTROL! Taken over {0.user} v2'.format(client))
 
 @client.event
+async def on_raw_reaction_add(payload):
+  if payload.emoji.name == '✅':
+    channel = client.get_channel(payload.channel_id)
+    if channel.name == 'rp-etiquette':
+      rp_role = discord.utils.get(payload.member.guild.roles, name='Role-player')
+      await payload.member.add_roles(rp_role, reason='Agreed to RP Etiquette')
+
+@client.event
 async def on_member_join(member):
   general_channel = discord.utils.get(member.guild.channels, name='interpoint-station') or discord.utils.get(member.guild.channels, name='general')
   announce_channel = client.get_channel(734729551388737560)
