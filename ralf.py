@@ -42,7 +42,7 @@ async def on_raw_reaction_add(payload):
   if payload.emoji.name == '✅':
     channel = client.get_channel(payload.channel_id)
     if channel.name == 'rp-etiquette':
-      rp_role = discord.utils.get(payload.member.guild.roles, name='Role-player')
+      rp_role = discord.utils.get(payload.member.guild.roles, name='Role-Player')
       await payload.member.add_roles(rp_role, reason='Agreed to RP Etiquette')
 
 @client.event
