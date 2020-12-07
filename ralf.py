@@ -161,7 +161,7 @@ async def evaluate_schedule_random(message):
   for id, applicant in applicants.items():
     applicant_ids.append(id)
 
-  lucky_draw = choice(applicant_ids, 45, replace=False)
+  lucky_draw = choice(applicant_ids, 36, replace=False)
 
   final_applicants = collections.OrderedDict()
 
@@ -205,7 +205,11 @@ async def evaluate_schedule_v2(message):
 def calculate_schedule(applicants):
   schedule = [ [ None for y in range( 4 ) ] for x in range( 7 ) ]
   schedule[6][0] = {'id': 137320952038948865, 'mention': '<@!137320952038948865>', 'mission_numbers': ['7'], 'name': 'Rolling Thunder (Member of the Board)', 'mech_token': 'barbarossa b', 'pilot_code': '1f337e99269892a7bdcac1a9d7eaf280', 'timestamp': 1606636738710.0}
-  filled_count = 1
+  schedule[1][0] = {'id': 241810540433768449, 'mention': '<@!241810540433768449>', 'mission_numbers': ['2'], 'name': 'Goggles', 'mech_token': 'token from la', 'pilot_code': 'e959242148fa313d4508e4d82ff3e9a9', 'timestamp': 1606636738710.0}
+  schedule[1][0] = {'id': 160495029213724670, 'mention': '<@!160495029213724670>', 'mission_numbers': ['2'], 'name': 'Spyglass', 'mech_token': 'token plea', 'pilot_code': '877f4694922c3d59e6f69a8ced4ab397', 'timestamp': 1606636738710.0}
+  schedule[1][0] = {'id': 614680905927360530, 'mention': '<@!614680905927360530>', 'mission_numbers': ['2'], 'name': 'Fractal', 'mech_token': '', 'pilot_code': 'e07a1fef19d9f1c7ab5ef8008b5b0472', 'timestamp': 1606636738710.0}
+  schedule[1][0] = {'id': 362954503357726720, 'mention': '<@!362954503357726720>', 'mission_numbers': ['2'], 'name': 'Caesar', 'mech_token': '', 'pilot_code': 'f94b1c7361e360d14322c11ef946b74b', 'timestamp': 1606636738710.0}
+  filled_count = 5
   scheduled = False
 
   for key, applicant in applicants.items():
