@@ -204,7 +204,7 @@ async def evaluate_schedule_v2(message):
 
 def calculate_schedule(applicants):
   schedule = [ [ None for y in range( 4 ) ] for x in range( 7 ) ]
-  schedule[2][0] = {'id': 166284832073056258, 'mention': '<@!166284832073056258>', 'mission_numbers': ['3'], 'name': 'Damocles (Member of the Board)', 'pilot_code': '2a766b681a5b24aee5ed7a9f4d837d6a', 'timestamp': 1606636738710.0}
+  schedule[2][0] = {'id': 137320952038948865, 'mention': '<@!137320952038948865>', 'mission_numbers': ['3'], 'name': 'Rolling Thunder (Member of the Board)', 'mech_token': 'barbarossa b', 'pilot_code': '1f337e99269892a7bdcac1a9d7eaf280', 'timestamp': 1606636738710.0}
   filled_count = 1
   scheduled = False
 
@@ -319,6 +319,8 @@ async def get_codes(message):
           codes_message += applicants[str(member.id)]['mention']
           codes_message += '\n'
           codes_message += applicants[str(member.id)]['pilot_code']
+          codes_message += '\n'
+          codes_message += applicants[str(member.id)]['mech_token']
           codes_message += '\n'
         except KeyError:
           continue
