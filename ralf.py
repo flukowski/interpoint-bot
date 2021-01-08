@@ -1,6 +1,7 @@
 # import pdb
 import os
 import re
+import datetime
 import asyncio
 import discord
 import pyrebase
@@ -133,6 +134,7 @@ async def handle_pilot_application(message):
       if mission_numbers:
         store_user_data(author, {
           "id": author.id,
+          "weight": 1,
           "name": author.nick or author.name,
           "mention": author.mention,
           "mission_numbers": mission_numbers,
@@ -155,6 +157,15 @@ async def evaluate_schedule_random(message):
     return await message.channel.send("You are not worthy!")
 
   applicants = database.child(firebase_namespace).child("users").get().val()
+
+  # Remove applications that are older than 2 days
+  cutoff = datetime.datetime.now()
+  cutoff = cutoff - datetime.timedelta(days=2)
+  cutoff_epoch = cutoff.timestamp() * 1000
+
+  for key in list(applicants.keys()):
+    if applicants[key]['timestamp'] < cutoff_epoch:
+      del applicants[key]
 
   applicant_ids = []
 
@@ -204,12 +215,7 @@ async def evaluate_schedule_v2(message):
 
 def calculate_schedule(applicants):
   schedule = [ [ None for y in range( 4 ) ] for x in range( 7 ) ]
-  schedule[6][0] = {'id': 137320952038948865, 'mention': '<@!137320952038948865>', 'mission_numbers': ['7'], 'name': 'Rolling Thunder (Member of the Board)', 'mech_token': 'barbarossa b', 'pilot_code': '1f337e99269892a7bdcac1a9d7eaf280', 'timestamp': 1606636738710.0}
-  schedule[1][0] = {'id': 241810540433768449, 'mention': '<@!241810540433768449>', 'mission_numbers': ['2'], 'name': 'Goggles', 'mech_token': 'token from la', 'pilot_code': 'e959242148fa313d4508e4d82ff3e9a9', 'timestamp': 1606636738710.0}
-  schedule[1][1] = {'id': 160495029213724672, 'mention': '<@!160495029213724672>', 'mission_numbers': ['2'], 'name': 'Spyglass', 'mech_token': 'token plea', 'pilot_code': '877f4694922c3d59e6f69a8ced4ab397', 'timestamp': 1606636738710.0}
-  schedule[1][2] = {'id': 614680905927360530, 'mention': '<@!614680905927360530>', 'mission_numbers': ['2'], 'name': 'Fractal', 'mech_token': '', 'pilot_code': 'e07a1fef19d9f1c7ab5ef8008b5b0472', 'timestamp': 1606636738710.0}
-  schedule[1][3] = {'id': 362954503357726720, 'mention': '<@!362954503357726720>', 'mission_numbers': ['2'], 'name': 'Caesar', 'mech_token': '', 'pilot_code': 'f94b1c7361e360d14322c11ef946b74b', 'timestamp': 1606636738710.0}
-  filled_count = 5
+  filled_count = 0
   scheduled = False
 
   for key, applicant in applicants.items():
@@ -265,11 +271,12 @@ def calculate_schedule(applicants):
   return schedule
 
 def store_user_data(user, data):
-  object = database.child(firebase_namespace).child("users").child(user.id).get().val()
+  # For normal schedule we need maintain the first timestamp in the week
+  # object = database.child(firebase_namespace).child("users").child(user.id).get().val()
 
-  if object:
-    if 'timestamp' in object:
-      data['timestamp'] = object['timestamp']
+  # if object:
+  #   if 'timestamp' in object:
+  #     data['timestamp'] = object['timestamp']
 
   print(data, flush=True)
 
