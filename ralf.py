@@ -134,7 +134,7 @@ async def handle_pilot_application(message):
       if mission_numbers:
         store_user_data(author, {
           "id": author.id,
-          "weight": 1,
+          "weight": 0.1,
           "name": author.nick or author.name,
           "mention": author.mention,
           "mission_numbers": mission_numbers,
@@ -168,11 +168,15 @@ async def evaluate_schedule_random(message):
       del applicants[key]
 
   applicant_ids = []
+  applicant_weights = []
 
   for id, applicant in applicants.items():
     applicant_ids.append(id)
+    weight = applicant['weight'] or 0.1
+    applicant_weights.append(weight)
 
-  lucky_draw = choice(applicant_ids, 36, replace=False)
+
+  lucky_draw = choice(applicant_ids, 36, replace=True, p=applicant_weights)
 
   final_applicants = collections.OrderedDict()
 
