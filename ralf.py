@@ -175,8 +175,10 @@ async def evaluate_schedule_random(message):
     weight = applicant['weight'] or 0.1
     applicant_weights.append(weight)
 
+  total_weight = sum(applicant_weights)
+  applicant_weights = list(map(lambda x: (x / total_weight), applicant_weights))
 
-  lucky_draw = choice(applicant_ids, 36, replace=True, p=applicant_weights)
+  lucky_draw = choice(applicant_ids, 36, replace=False, p=applicant_weights)
 
   final_applicants = collections.OrderedDict()
 
