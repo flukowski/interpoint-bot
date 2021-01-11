@@ -221,7 +221,8 @@ async def evaluate_schedule_v2(message):
 
 def calculate_schedule(applicants):
   schedule = [ [ None for y in range( 4 ) ] for x in range( 7 ) ]
-  filled_count = 0
+  schedule[1][1] = {'id': 160495029213724672, 'mention': '<@!160495029213724672>', 'mission_numbers': ['2'], 'name': 'Spyglass', 'mech_token': 'token', 'pilot_code': '877f4694922c3d59e6f69a8ced4ab397', 'timestamp': 1610319479459}
+  filled_count = 1
   scheduled = False
 
   for key, applicant in applicants.items():
