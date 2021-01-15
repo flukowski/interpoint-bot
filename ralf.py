@@ -162,7 +162,7 @@ async def evaluate_schedule_random(message):
 
   # Remove applications that are older than 2 days
   cutoff = datetime.datetime.now()
-  cutoff = cutoff - datetime.timedelta(days=2)
+  cutoff = cutoff - datetime.timedelta(days=6)
   cutoff_epoch = cutoff.timestamp() * 1000
 
   for key in list(applicants.keys()):
