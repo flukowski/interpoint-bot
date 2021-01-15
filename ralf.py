@@ -42,9 +42,12 @@ async def on_ready():
 async def on_raw_reaction_add(payload):
   if payload.emoji.name == '✅':
     channel = client.get_channel(payload.channel_id)
-    if channel.name == 'rp-etiquette':
+    if channel.id == 780346906509312060:
       rp_role = discord.utils.get(payload.member.guild.roles, name='Role-Player')
       await payload.member.add_roles(rp_role, reason='Agreed to RP Etiquette')
+    if channel.id == 797929892078813184:
+      sg_role = discord.utils.get(payload.member.guild.roles, name='Side Game Seeker')
+      await payload.member.add_roles(sg_role, reason='Looking for Side Games')
 
 @client.event
 async def on_member_join(member):
