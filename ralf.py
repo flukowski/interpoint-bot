@@ -139,7 +139,7 @@ async def handle_pilot_application(message):
       if mission_numbers:
         store_user_data(author, {
           "id": author.id,
-          "weight": 0.1,
+          "weight": applicant['weight'] if 'weight' in applicant else 0.1,
           "name": author.nick or author.name,
           "mention": author.mention,
           "mission_numbers": mission_numbers,
