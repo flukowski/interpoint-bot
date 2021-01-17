@@ -139,7 +139,7 @@ async def handle_pilot_application(message):
       if mission_numbers:
         store_user_data(author, {
           "id": author.id,
-          "weight": applicant['weight'] if 'weight' in applicant else 0.1,
+          "weight": 0.1,
           "name": author.nick or author.name,
           "mention": author.mention,
           "mission_numbers": mission_numbers,
@@ -286,12 +286,11 @@ def calculate_schedule(applicants):
   return schedule
 
 def store_user_data(user, data):
-  # For normal schedule we need maintain the first timestamp in the week
-  # object = database.child(firebase_namespace).child("users").child(user.id).get().val()
+  object = database.child(firebase_namespace).child("users").child(user.id).get().val()
 
-  # if object:
-  #   if 'timestamp' in object:
-  #     data['timestamp'] = object['timestamp']
+  if object:
+    if 'weight' in object:
+      data['weight'] = object['weight']
 
   print(data, flush=True)
 
