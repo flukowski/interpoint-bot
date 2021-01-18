@@ -226,10 +226,10 @@ async def evaluate_schedule_v2(message):
 
 def calculate_schedule(applicants):
   schedule = [ [ None for y in range( 4 ) ] for x in range( 7 ) ]
-  schedule[1][0] = {'id': 160495029213724672, 'mention': '<@!160495029213724672>', 'mission_numbers': ['2'], 'name': 'Spyglass', 'mech_token': 'token', 'pilot_code': '877f4694922c3d59e6f69a8ced4ab397', 'timestamp': 1610319479459}
-  schedule[1][1] = {'id': 98274036634615808, 'mention': '<@!98274036634615808>', 'mission_numbers': ['2'], 'name': 'Quicksilver', 'mech_token': 'token', 'pilot_code': '877f4694922c3d59e6f69a8ced4ab397', 'timestamp': 1610319479459}
-  schedule[1][2] = {'id': 332313675291426829, 'mention': '<@!332313675291426829>', 'mission_numbers': ['2'], 'name': 'Armstrong', 'mech_token': 'token', 'pilot_code': '877f4694922c3d59e6f69a8ced4ab397', 'timestamp': 1610319479459}
-  schedule[1][3] = {'id': 230407467190714368, 'mention': '<@!230407467190714368>', 'mission_numbers': ['2'], 'name': 'Rubicon', 'mech_token': 'token', 'pilot_code': '877f4694922c3d59e6f69a8ced4ab397', 'timestamp': 1610319479459}
+  schedule[2][0] = {'id': 134757769617211392, 'mention': '<@!134757769617211392>', 'mission_numbers': ['3'], 'name': 'Vice', 'mech_token': 'token', 'pilot_code': '877f4694922c3d59e6f69a8ced4ab397', 'timestamp': 1610319479459}
+  schedule[2][1] = {'id': 614680905927360530, 'mention': '<@!614680905927360530>', 'mission_numbers': ['3'], 'name': 'Fractal', 'mech_token': 'token', 'pilot_code': '877f4694922c3d59e6f69a8ced4ab397', 'timestamp': 1610319479459}
+  schedule[2][2] = {'id': 137320952038948865, 'mention': '<@!137320952038948865>', 'mission_numbers': ['3'], 'name': 'RT', 'mech_token': 'token', 'pilot_code': '877f4694922c3d59e6f69a8ced4ab397', 'timestamp': 1610319479459}
+  schedule[2][3] = {'id': 247801602541355010, 'mention': '<@!247801602541355010>', 'mission_numbers': ['3'], 'name': 'Peregrine', 'mech_token': 'token', 'pilot_code': '877f4694922c3d59e6f69a8ced4ab397', 'timestamp': 1610319479459}
   filled_count = 4
   scheduled = False
 
