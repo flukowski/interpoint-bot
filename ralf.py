@@ -177,7 +177,7 @@ async def evaluate_schedule_random(message):
 
   for id, applicant in applicants.items():
     applicant_ids.append(id)
-    weight = applicant['weight'] or 0.1
+    weight = applicant['weight']
     applicant_weights.append(weight)
 
   total_weight = sum(applicant_weights)
