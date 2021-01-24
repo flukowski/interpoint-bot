@@ -34,6 +34,13 @@ mission_roles = [
   "Mission7 Crew"
 ]
 
+cooldown_roles = [
+  "Cooldown",
+  "Cooldown Week 1 (of 3)",
+  "Cooldown Week 2 (of 3)",
+  "Cooldown Week 3 (of 3)",
+]
+
 @client.event
 async def on_ready():
   print('ASSUMING DIRECT CONTROL! Taken over {0.user} v2'.format(client))
@@ -125,7 +132,7 @@ async def handle_pilot_application(message):
     author = message.author
     author_roles = list(map(lambda x: x.name, author.roles))
 
-    if set(author_roles) & set(mission_roles):
+    if (set(author_roles) & set(mission_roles)) or (set(author_roles) & set(cooldown_roles)):
       await message.add_reaction("\U000023F0") # Alarm clock
     else:
       if message.reactions:
