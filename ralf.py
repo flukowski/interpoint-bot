@@ -190,7 +190,7 @@ async def evaluate_schedule_random(message):
   total_weight = sum(applicant_weights)
   applicant_weights = list(map(lambda x: (x / total_weight), applicant_weights))
 
-  lucky_draw = choice(applicant_ids, 36, replace=False, p=applicant_weights)
+  lucky_draw = choice(applicant_ids, 28, replace=False, p=applicant_weights)
 
   final_applicants = collections.OrderedDict()
 
@@ -233,11 +233,12 @@ async def evaluate_schedule_v2(message):
 
 def calculate_schedule(applicants):
   schedule = [ [ None for y in range( 4 ) ] for x in range( 7 ) ]
-  schedule[2][0] = {'id': 134757769617211392, 'mention': '<@!134757769617211392>', 'mission_numbers': ['3'], 'name': 'Vice', 'mech_token': 'token', 'pilot_code': '877f4694922c3d59e6f69a8ced4ab397', 'timestamp': 1610319479459}
-  schedule[2][1] = {'id': 614680905927360530, 'mention': '<@!614680905927360530>', 'mission_numbers': ['3'], 'name': 'Fractal', 'mech_token': 'token', 'pilot_code': '877f4694922c3d59e6f69a8ced4ab397', 'timestamp': 1610319479459}
-  schedule[2][2] = {'id': 137320952038948865, 'mention': '<@!137320952038948865>', 'mission_numbers': ['3'], 'name': 'RT', 'mech_token': 'token', 'pilot_code': '877f4694922c3d59e6f69a8ced4ab397', 'timestamp': 1610319479459}
-  schedule[2][3] = {'id': 247801602541355010, 'mention': '<@!247801602541355010>', 'mission_numbers': ['3'], 'name': 'Peregrine', 'mech_token': 'token', 'pilot_code': '877f4694922c3d59e6f69a8ced4ab397', 'timestamp': 1610319479459}
-  filled_count = 4
+  schedule[5][0] = {'id': 244159618832531456, 'mention': '<@!244159618832531456>', 'mission_numbers': ['6'], 'name': 'Sub Rosa', 'mech_token': 'token', 'pilot_code': '877f4694922c3d59e6f69a8ced4ab397', 'timestamp': 1610319479459}
+  schedule[0][0] = {'id': 202688077351616512, 'mention': '<@!202688077351616512>', 'mission_numbers': ['1'], 'name': 'Hothead', 'mech_token': 'token', 'pilot_code': '877f4694922c3d59e6f69a8ced4ab397', 'timestamp': 1610319479459}
+  schedule[0][1] = {'id': 378367986332991500, 'mention': '<@!378367986332991500>', 'mission_numbers': ['1'], 'name': 'Fuath', 'mech_token': 'token', 'pilot_code': '877f4694922c3d59e6f69a8ced4ab397', 'timestamp': 1610319479459}
+  schedule[0][2] = {'id': 207279872685506561, 'mention': '<@!207279872685506561>', 'mission_numbers': ['1'], 'name': 'Opera', 'mech_token': 'token', 'pilot_code': '877f4694922c3d59e6f69a8ced4ab397', 'timestamp': 1610319479459}
+  schedule[0][3] = {'id': 614680905927360530, 'mention': '<@!614680905927360530>', 'mission_numbers': ['1'], 'name': 'Fractal', 'mech_token': 'token', 'pilot_code': '877f4694922c3d59e6f69a8ced4ab397', 'timestamp': 1610319479459}
+  filled_count = 5
   scheduled = False
 
   for key, applicant in applicants.items():
