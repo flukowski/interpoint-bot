@@ -130,6 +130,8 @@ async def on_message_edit(_, message):
 async def handle_pilot_application(message):
   if message.channel.name == 'pilot-application':
     author = message.author
+    if author.id == 550523153302945792:
+      return
     author_roles = list(map(lambda x: x.name, author.roles))
 
     if (set(author_roles) & set(mission_roles)) or (set(author_roles) & set(cooldown_roles)):
@@ -190,7 +192,7 @@ async def evaluate_schedule_random(message):
   total_weight = sum(applicant_weights)
   applicant_weights = list(map(lambda x: (x / total_weight), applicant_weights))
 
-  lucky_draw = choice(applicant_ids, 28, replace=False, p=applicant_weights)
+  lucky_draw = choice(applicant_ids, 27, replace=False, p=applicant_weights)
 
   final_applicants = collections.OrderedDict()
 
