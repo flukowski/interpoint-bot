@@ -36,8 +36,8 @@ mission_roles = [
 
 cooldown_roles = [
   "Cooldown",
-  "Cooldown Week 1 (of 3)",
-  "Cooldown Week 2 (of 3)",
+  "Cooldown Week 1 (of 2)",
+  "Cooldown Week 2 (of 2)",
   "Cooldown Week 3 (of 3)",
 ]
 
@@ -154,6 +154,7 @@ async def handle_pilot_application(message):
           "mission_numbers": mission_numbers,
           "pilot_code": pilot_code and pilot_code.group(0),
           "mech_token": mech_token,
+          "author_roles": author_roles,
           "timestamp": message.created_at.timestamp() * 1000
         })
         await asyncio.wait([add_mission_reaction(message, number) for number in mission_numbers])
