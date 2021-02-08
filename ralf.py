@@ -185,7 +185,7 @@ async def evaluate_schedule_random(message):
   if message.content.startswith('?random-schedule '):
     cutoff_role = re.sub(re.escape('?random-schedule '), '', message.content)
     for key in list(applicants.keys()):
-      if cutoff_role not in applicants[key]['mission_roles']:
+      if cutoff_role not in applicants[key]['author_roles']:
         del applicants[key]
 
   applicant_ids = []
