@@ -243,17 +243,17 @@ async def evaluate_schedule_v2(message):
 def calculate_schedule(applicants):
   schedule = [ [ None for y in range( 4 ) ] for x in range( 7 ) ]
   schedule[1][0] = {'id': 247801602541355010, 'mention': '<@!247801602541355010>', 'mission_numbers': ['2'], 'name': 'Sub Rosa', 'mech_token': 'token', 'pilot_code': '877f4694922c3d59e6f69a8ced4ab397', 'timestamp': 1610319479459}
-  schedule[1][0] = {'id': 98274036634615808, 'mention': '<@!98274036634615808>', 'mission_numbers': ['2'], 'name': 'Sub Rosa', 'mech_token': 'token', 'pilot_code': '877f4694922c3d59e6f69a8ced4ab397', 'timestamp': 1610319479459}
-  schedule[1][0] = {'id': 134757769617211392, 'mention': '<@!134757769617211392>', 'mission_numbers': ['2'], 'name': 'Sub Rosa', 'mech_token': 'token', 'pilot_code': '877f4694922c3d59e6f69a8ced4ab397', 'timestamp': 1610319479459}
-  schedule[1][0] = {'id': 137320952038948865, 'mention': '<@!137320952038948865>', 'mission_numbers': ['2'], 'name': 'Sub Rosa', 'mech_token': 'token', 'pilot_code': '877f4694922c3d59e6f69a8ced4ab397', 'timestamp': 1610319479459}
+  schedule[1][1] = {'id': 98274036634615808, 'mention': '<@!98274036634615808>', 'mission_numbers': ['2'], 'name': 'Sub Rosa', 'mech_token': 'token', 'pilot_code': '877f4694922c3d59e6f69a8ced4ab397', 'timestamp': 1610319479459}
+  schedule[1][2] = {'id': 134757769617211392, 'mention': '<@!134757769617211392>', 'mission_numbers': ['2'], 'name': 'Sub Rosa', 'mech_token': 'token', 'pilot_code': '877f4694922c3d59e6f69a8ced4ab397', 'timestamp': 1610319479459}
+  schedule[1][3] = {'id': 137320952038948865, 'mention': '<@!137320952038948865>', 'mission_numbers': ['2'], 'name': 'Sub Rosa', 'mech_token': 'token', 'pilot_code': '877f4694922c3d59e6f69a8ced4ab397', 'timestamp': 1610319479459}
   schedule[2][0] = {'id': 88457039625338880, 'mention': '<@!88457039625338880>', 'mission_numbers': ['3'], 'name': 'Sub Rosa', 'mech_token': 'token', 'pilot_code': '877f4694922c3d59e6f69a8ced4ab397', 'timestamp': 1610319479459}
-  schedule[2][0] = {'id': 427849270293561344, 'mention': '<@!427849270293561344>', 'mission_numbers': ['3'], 'name': 'Sub Rosa', 'mech_token': 'token', 'pilot_code': '877f4694922c3d59e6f69a8ced4ab397', 'timestamp': 1610319479459}
-  schedule[2][0] = {'id': 317886633661693953, 'mention': '<@!317886633661693953>', 'mission_numbers': ['3'], 'name': 'Sub Rosa', 'mech_token': 'token', 'pilot_code': '877f4694922c3d59e6f69a8ced4ab397', 'timestamp': 1610319479459}
-  schedule[2][0] = {'id': 188983367406977025, 'mention': '<@!188983367406977025>', 'mission_numbers': ['3'], 'name': 'Sub Rosa', 'mech_token': 'token', 'pilot_code': '877f4694922c3d59e6f69a8ced4ab397', 'timestamp': 1610319479459}
+  schedule[2][1] = {'id': 427849270293561344, 'mention': '<@!427849270293561344>', 'mission_numbers': ['3'], 'name': 'Sub Rosa', 'mech_token': 'token', 'pilot_code': '877f4694922c3d59e6f69a8ced4ab397', 'timestamp': 1610319479459}
+  schedule[2][2] = {'id': 317886633661693953, 'mention': '<@!317886633661693953>', 'mission_numbers': ['3'], 'name': 'Sub Rosa', 'mech_token': 'token', 'pilot_code': '877f4694922c3d59e6f69a8ced4ab397', 'timestamp': 1610319479459}
+  schedule[2][3] = {'id': 188983367406977025, 'mention': '<@!188983367406977025>', 'mission_numbers': ['3'], 'name': 'Sub Rosa', 'mech_token': 'token', 'pilot_code': '877f4694922c3d59e6f69a8ced4ab397', 'timestamp': 1610319479459}
   schedule[6][0] = {'id': 90892480274272256, 'mention': '<@!90892480274272256>', 'mission_numbers': ['6'], 'name': 'Sub Rosa', 'mech_token': 'token', 'pilot_code': '877f4694922c3d59e6f69a8ced4ab397', 'timestamp': 1610319479459}
-  schedule[6][0] = {'id': 230407467190714368, 'mention': '<@!230407467190714368>', 'mission_numbers': ['6'], 'name': 'Sub Rosa', 'mech_token': 'token', 'pilot_code': '877f4694922c3d59e6f69a8ced4ab397', 'timestamp': 1610319479459}
-  schedule[6][0] = {'id': 266266837245886464, 'mention': '<@!266266837245886464>', 'mission_numbers': ['6'], 'name': 'Sub Rosa', 'mech_token': 'token', 'pilot_code': '877f4694922c3d59e6f69a8ced4ab397', 'timestamp': 1610319479459}
-  schedule[6][0] = {'id': 285868947126091776, 'mention': '<@!285868947126091776>', 'mission_numbers': ['6'], 'name': 'Sub Rosa', 'mech_token': 'token', 'pilot_code': '877f4694922c3d59e6f69a8ced4ab397', 'timestamp': 1610319479459}
+  schedule[6][1] = {'id': 230407467190714368, 'mention': '<@!230407467190714368>', 'mission_numbers': ['6'], 'name': 'Sub Rosa', 'mech_token': 'token', 'pilot_code': '877f4694922c3d59e6f69a8ced4ab397', 'timestamp': 1610319479459}
+  schedule[6][2] = {'id': 266266837245886464, 'mention': '<@!266266837245886464>', 'mission_numbers': ['6'], 'name': 'Sub Rosa', 'mech_token': 'token', 'pilot_code': '877f4694922c3d59e6f69a8ced4ab397', 'timestamp': 1610319479459}
+  schedule[6][3] = {'id': 285868947126091776, 'mention': '<@!285868947126091776>', 'mission_numbers': ['6'], 'name': 'Sub Rosa', 'mech_token': 'token', 'pilot_code': '877f4694922c3d59e6f69a8ced4ab397', 'timestamp': 1610319479459}
   filled_count = 12
   scheduled = False
 
