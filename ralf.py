@@ -182,6 +182,12 @@ async def evaluate_schedule_random(message):
     if applicants[key]['timestamp'] < cutoff_epoch:
       del applicants[key]
 
+  if message.content.startswith('?random-schedule '):
+    cutoff_role = re.sub('?random-schedule ', '', message.content)
+    for key in list(applicants.keys()):
+      if cutoff_role not in applicants[key]['mission_roles']:
+        del applicants[key]
+
   applicant_ids = []
   applicant_weights = []
 
@@ -193,7 +199,7 @@ async def evaluate_schedule_random(message):
   total_weight = sum(applicant_weights)
   applicant_weights = list(map(lambda x: (x / total_weight), applicant_weights))
 
-  lucky_draw = choice(applicant_ids, 28, replace=False, p=applicant_weights)
+  lucky_draw = choice(applicant_ids, len(applicant_ids), replace=False, p=applicant_weights)
 
   final_applicants = collections.OrderedDict()
 
