@@ -242,10 +242,7 @@ async def evaluate_schedule_v2(message):
 
 def calculate_schedule(applicants):
   schedule = [ [ None for y in range( 4 ) ] for x in range( 7 ) ]
-  schedule[1][1] = {'id': 160495029213724672, 'mention': '<@!160495029213724672>', 'mission_numbers': ['2'], 'name': 'Sub Rosa', 'mech_token': 'token', 'pilot_code': '877f4694922c3d59e6f69a8ced4ab397', 'timestamp': 1610319479459}
-  schedule[6][0] = {'id': 207279872685506561, 'mention': '<@!207279872685506561>', 'mission_numbers': ['7'], 'name': 'Sub Rosa', 'mech_token': 'token', 'pilot_code': '877f4694922c3d59e6f69a8ced4ab397', 'timestamp': 1610319479459}
-  schedule[6][1] = {'id': 378367986332991500, 'mention': '<@!378367986332991500>', 'mission_numbers': ['7'], 'name': 'Sub Rosa', 'mech_token': 'token', 'pilot_code': '877f4694922c3d59e6f69a8ced4ab397', 'timestamp': 1610319479459}
-  filled_count = 3
+  filled_count = 0
   scheduled = False
 
   for key, applicant in applicants.items():
