@@ -11,6 +11,7 @@ from numpy.random import choice
 
 intents = discord.Intents.default()
 intents.members = True
+intents.messages = True
 client = discord.Client(intents=intents)
 
 config = {
@@ -124,7 +125,10 @@ async def on_message(message):
     await message.add_reaction("<:cube:744345789802741900>")
 
 @client.event
-async def on_message_edit(_, message):
+async def on_raw_message_edit(payload):
+  channel = client.get_channel(payload.channel_id)
+  message = await channel.fetch_message(payload.message_id)
+
   await handle_pilot_application(message)
 
 async def handle_pilot_application(message):
