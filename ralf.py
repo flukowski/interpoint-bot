@@ -70,7 +70,8 @@ async def on_member_join(member):
     '\n\nIf the schedule is full (check {1.mention} to see if it is) you can still apply for reserves for a chance if a pilot goes AWOL or set up a character and join the RP till Sunday when the schedule opens up again.' \
     '\n\nIf you want to get involved in the RP in this server, head down into {2.mention} and follow the rules to unlock the RP channels.' \
     '\n\nIf you ever need help, just ask any of us, we\'re pretty friendly.' \
-    '\n\nWe hope you enjoy your stay at Interpoint Station:tm:'
+    '\n\nWe hope you enjoy your stay at Interpoint Station:tm:' \
+    '\n\nWe are on hiatus till May 17th'
 
   await general_channel.send(message.format(member, announce_channel, rp_channel))
 
