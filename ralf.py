@@ -104,7 +104,10 @@ async def on_message(message):
     await message.channel.send('https://www.patreon.com/interpoint')
 
   if message.content.startswith('?roll20'):
-    await message.channel.send('https://app.roll20.net/join/8055988/5rQ7CQ')
+    await message.channel.send('https://app.roll20.net/join/9499499/icSkKQ')
+
+  if message.content.startswith('?homebrew'):
+    await message.channel.send('https://interpoint-station.itch.io/intercorp')
 
   cowboy_content = [
     'cowboy',
