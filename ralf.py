@@ -88,6 +88,12 @@ async def on_message(message):
   if message.content.startswith('?random-schedule'):
     await evaluate_schedule_random(message)
 
+  if message.content.startswith('?reset-weight'):
+    await reset_weight(message)
+
+  if message.content.startswith('?increase-weight'):
+    await increase_weight(message)
+
   if message.content.startswith('?codes'):
     await get_codes(message)
 
@@ -180,7 +186,7 @@ async def evaluate_schedule_random(message):
 
   applicants = database.child(firebase_namespace).child("users").get().val()
 
-  # Remove applications that are older than 2 days
+  # Remove applications that are older than 6 days
   cutoff = datetime.datetime.now()
   cutoff = cutoff - datetime.timedelta(days=6)
   cutoff_epoch = cutoff.timestamp() * 1000
@@ -370,5 +376,50 @@ async def get_codes(message):
           continue
 
   await message.channel.send(codes_message)
+
+async def reset_weight(message):
+  author = message.author
+  author_roles = list(map(lambda x: x.name, author.roles))
+  if not (message.author.id == 202688077351616512 or message.author.id == 550523153302945792 or 'Moderator' in author_roles):
+    return await message.channel.send("You are not worthy!")
+
+  applicants = database.child(firebase_namespace).child("users").get().val()
+
+  # Only keep people on cooldown and in missions
+  for key in list(applicants.keys()):
+    if not ((set(applicants[key]['author_roles']) & set(mission_roles)) or (set(applicants[key]['author_roles']) & set(cooldown_roles))):
+      del applicants[key]
+
+  for key in list(applicants.keys()):
+    database.child(firebase_namespace).child("users").child(key).child('weight').set(0.1)
+
+  await message.channel.send('Weight reset')
+
+async def increase_weight(message):
+  author = message.author
+  author_roles = list(map(lambda x: x.name, author.roles))
+  if not (message.author.id == 202688077351616512 or message.author.id == 550523153302945792 or 'Moderator' in author_roles):
+    return await message.channel.send("You are not worthy!")
+
+  applicants = database.child(firebase_namespace).child("users").get().val()
+
+  # Remove applications that are older than 9 days
+  cutoff = datetime.datetime.now()
+  cutoff = cutoff - datetime.timedelta(days=9)
+  cutoff_epoch = cutoff.timestamp() * 1000
+
+  for key in list(applicants.keys()):
+    if applicants[key]['timestamp'] < cutoff_epoch:
+      del applicants[key]
+
+  # Remove people on cooldown and in missions
+  for key in list(applicants.keys()):
+    if (set(applicants[key]['author_roles']) & set(mission_roles)) or (set(applicants[key]['author_roles']) & set(cooldown_roles)):
+      del applicants[key]
+
+  for key in list(applicants.keys()):
+    database.child(firebase_namespace).child("users").child(key).child('weight').set(applicants[key]['weight'] * 2)
+
+  await message.channel.send('Weight increased')
 
 client.run(os.environ['RALF_JR_DISCORD_TOKEN'])
