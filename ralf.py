@@ -405,7 +405,7 @@ async def reset_weight(message):
 
   print('Resetting', flush=True)
   for key in list(applicants.keys()):
-    print(applicant[key]['name'], flush=True)
+    print(applicants[key]['name'], flush=True)
     database.child(firebase_namespace).child("users").child(key).child('weight').set(0.1)
 
   await message.channel.send('Weight reset')
@@ -438,7 +438,7 @@ async def increase_weight(message):
 
   print('Increasing', flush=True)
   for key in list(applicants.keys()):
-    print(applicant[key]['name'], flush=True)
+    print(applicants[key]['name'], flush=True)
     database.child(firebase_namespace).child("users").child(key).child('weight').set(applicants[key]['weight'] * 2)
 
   await message.channel.send('Weight increased')
