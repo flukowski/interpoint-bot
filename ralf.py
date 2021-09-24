@@ -385,6 +385,15 @@ async def reset_weight(message):
 
   applicants = database.child(firebase_namespace).child("users").get().val()
 
+  # Remove applications that are older than 30 days
+  cutoff = datetime.datetime.now()
+  cutoff = cutoff - datetime.timedelta(days=30)
+  cutoff_epoch = cutoff.timestamp() * 1000
+
+  for key in list(applicants.keys()):
+    if applicants[key]['timestamp'] < cutoff_epoch:
+      del applicants[key]
+
   # Only keep people on cooldown and in missions
   for key in list(applicants.keys()):
     applicant_roles = await get_user_roles(author.guild, key)
@@ -437,9 +446,8 @@ async def increase_weight(message):
 async def get_user_roles(guild, user_id):
   try:
     member = await guild.fetch_member(user_id)
-    print(member, flush=True)
     if member:
-      return member.roles
+      return list(map(lambda x: x.name, member.roles))
     else:
       return None
   except:
