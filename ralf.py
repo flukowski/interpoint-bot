@@ -387,7 +387,7 @@ async def reset_weight(message):
 
   # Only keep people on cooldown and in missions
   for key in list(applicants.keys()):
-    if not ((set(applicants[key]['author_roles']) & set(mission_roles)) or (set(applicants[key]['author_roles']) & set(cooldown_roles))):
+    if 'author_roles' in applicants[key] and not ((set(applicants[key]['author_roles']) & set(mission_roles)) or (set(applicants[key]['author_roles']) & set(cooldown_roles))):
       del applicants[key]
 
   for key in list(applicants.keys()):
@@ -414,7 +414,7 @@ async def increase_weight(message):
 
   # Remove people on cooldown and in missions
   for key in list(applicants.keys()):
-    if (set(applicants[key]['author_roles']) & set(mission_roles)) or (set(applicants[key]['author_roles']) & set(cooldown_roles)):
+    if 'author_roles' in applicants[key] and (set(applicants[key]['author_roles']) & set(mission_roles)) or (set(applicants[key]['author_roles']) & set(cooldown_roles)):
       del applicants[key]
 
   for key in list(applicants.keys()):
