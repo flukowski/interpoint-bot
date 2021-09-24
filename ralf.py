@@ -387,7 +387,11 @@ async def reset_weight(message):
 
   # Only keep people on cooldown and in missions
   for key in list(applicants.keys()):
-    if 'author_roles' in applicants[key] and not ((set(applicants[key]['author_roles']) & set(mission_roles)) or (set(applicants[key]['author_roles']) & set(cooldown_roles))):
+    applicant_roles = get_user_roles(author.guild, key)
+    if applicant_roles:
+      if not ((set(applicant_roles) & set(mission_roles)) or (set(applicant_roles) & set(cooldown_roles))):
+        del applicants[key]
+    else:
       del applicants[key]
 
   for key in list(applicants.keys()):
@@ -414,12 +418,23 @@ async def increase_weight(message):
 
   # Remove people on cooldown and in missions
   for key in list(applicants.keys()):
-    if 'author_roles' in applicants[key] and (set(applicants[key]['author_roles']) & set(mission_roles)) or (set(applicants[key]['author_roles']) & set(cooldown_roles)):
+    applicant_roles = get_user_roles(author.guild, key)
+    if applicant_roles:
+      if (set(applicant_roles) & set(mission_roles)) or (set(applicant_roles) & set(cooldown_roles)):
+        del applicants[key]
+    else:
       del applicants[key]
 
   for key in list(applicants.keys()):
     database.child(firebase_namespace).child("users").child(key).child('weight').set(applicants[key]['weight'] * 2)
 
   await message.channel.send('Weight increased')
+
+def get_user_roles(guild, user_id):
+  member = guild.get_member(user_id)
+  if member:
+    return member.roles
+  else:
+    return None
 
 client.run(os.environ['RALF_JR_DISCORD_TOKEN'])
