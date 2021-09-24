@@ -435,11 +435,14 @@ async def increase_weight(message):
   await message.channel.send('Weight increased')
 
 async def get_user_roles(guild, user_id):
-  member = await guild.fetch_member(user_id)
-  print(member, flush=True)
-  if member:
-    return member.roles
-  else:
+  try:
+    member = await guild.fetch_member(user_id)
+    print(member, flush=True)
+    if member:
+      return member.roles
+    else:
+      return None
+  except:
     return None
 
 client.run(os.environ['RALF_JR_DISCORD_TOKEN'])
