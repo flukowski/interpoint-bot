@@ -387,7 +387,7 @@ async def reset_weight(message):
 
   # Only keep people on cooldown and in missions
   for key in list(applicants.keys()):
-    applicant_roles = get_user_roles(author.guild, key)
+    applicant_roles = await get_user_roles(author.guild, key)
     if applicant_roles:
       if not ((set(applicant_roles) & set(mission_roles)) or (set(applicant_roles) & set(cooldown_roles))):
         del applicants[key]
@@ -420,7 +420,7 @@ async def increase_weight(message):
 
   # Remove people on cooldown and in missions
   for key in list(applicants.keys()):
-    applicant_roles = get_user_roles(author.guild, key)
+    applicant_roles = await get_user_roles(author.guild, key)
     if applicant_roles:
       if (set(applicant_roles) & set(mission_roles)) or (set(applicant_roles) & set(cooldown_roles)):
         del applicants[key]
@@ -434,8 +434,9 @@ async def increase_weight(message):
 
   await message.channel.send('Weight increased')
 
-def get_user_roles(guild, user_id):
-  member = guild.get_member(user_id)
+async def get_user_roles(guild, user_id):
+  member = await guild.fetch_member(user_id)
+  print(member, flush=True)
   if member:
     return member.roles
   else:
