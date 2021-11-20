@@ -91,6 +91,9 @@ async def on_message(message):
   if message.content.startswith('?reset-weight'):
     await reset_weight(message)
 
+  if message.content.startswith('?hard-reset-weight'):
+    await hard_reset_weight(message)
+
   if message.content.startswith('?increase-weight'):
     await increase_weight(message)
 
@@ -114,6 +117,15 @@ async def on_message(message):
 
   if message.content.startswith('?homebrew'):
     await message.channel.send('https://interpoint-station.itch.io/intercorp')
+
+  if message.content.startswith('?random-mech'):
+    await get_random_mech(message)
+
+  if message.content.startswith('?random-trait'):
+    await get_random_trait(message)
+
+  if message.content.startswith('?random-cp'):
+    await get_random_cp(message)
 
   cowboy_content = [
     'cowboy',
@@ -410,6 +422,21 @@ async def reset_weight(message):
 
   await message.channel.send('Weight reset')
 
+async def hard_reset_weight(message):
+  author = message.author
+  author_roles = list(map(lambda x: x.name, author.roles))
+  if not (message.author.id == 202688077351616512 or message.author.id == 550523153302945792 or 'Moderator' in author_roles):
+    return await message.channel.send("You are not worthy!")
+
+  applicants = database.child(firebase_namespace).child("users").get().val()
+
+  print('Resetting', flush=True)
+  for key in list(applicants.keys()):
+    print(applicants[key]['name'], flush=True)
+    database.child(firebase_namespace).child("users").child(key).child('weight').set(0.1)
+
+  await message.channel.send('Weight hard reset')
+
 async def increase_weight(message):
   author = message.author
   author_roles = list(map(lambda x: x.name, author.roles))
@@ -452,5 +479,20 @@ async def get_user_roles(guild, user_id):
       return None
   except:
     return None
+
+async def get_random_mech(message):
+  mechs = ["Everest", "Sagarmatha", "Blackbeard", "Drake", "Lancaster", "Nelson", "Raleigh", "Tortuga", "Vlad", "Caliban", "Zheng", "Kidd", "Black Witch", "Death's Head", "Dusk Wing", "Metal Mark", "Monarch", "Mourning Cloak", "Swallowtail", "Ranger Swallowtail", "Atlas", "Balor", "Goblin", "Gorgon", "Hydra", "Manticore", "Minotaur", "Pegasus", "Kobold", "Lich", "Barbarossa", "Ghengis", "Ghengis Mk1", "Iskander", "Napoleon", "Saladin", "Sherman", "Tokugawa", "Enkidu", "Sunzi"]
+  random_mech = choice(mechs)
+  return await message.channel.send(random_mech)
+
+async def get_random_trait(message):
+  traits = [ "Iniative Everest", "Replacable Parts Everest", "Guardian Sagmartha", "Heroism Sagmartha", "Grapple Cable Black Beard", "Lock Kill Sub System Black Beard", "Exposed Reactor Black Beard", "Wrecking Ball Caliban", "Pursue Prey Caliban", "Slam Caliban", "Weak Computer Caliban", "Heavy Frame Drake", "Blast Plating Drake", "Slow Drake", "Guardian Drake", "Reroute Power Kidd", "Recycle Kidd", "Rapid Deployment Kidd", "Insulated Lancaster", "Combat Repair Lancaster", "Redundant System Lancaster", "Momentum Nelson", "Skirmisher Nelson", "Full Metal Jacket Raleigh", "Shielded Magazines Raleigh", "Sentinel Tortuga", "Guardian Tortuga", "Dismemberment Vlad", "Shrike Armor Vlad", "Giant Killer Atlas", "Jäger Dodge Atlas", "Finishing Blow Atlas", "Exposed Reactor Atlas", "Repulser Field Black Witch", "Mag Parry Black Witch", "Neuro Link Deaths Head", "Perfected Targeting Deaths Head", "Manouverability Jets Duskwing", "Harlequin Cloak Duskwing", "Fragile Duskwing", "Flash Cloak Metal Mark", "Carapace Adaption Metal Mark", "Avenger Silos Monarch", "Seeking Payload Monarch", "Hunter Mourning Cloak", "Biotic Components Mourning Cloak", "Integrated Cloak Swallowtail", "Prophetic Scanners Swallowtail", "Scout Battlefield Ranger Swallowtail", "Invigorating Scanners Ranger Swallowtail", "Weathering Ranger Swallowtail", "Self Perpetuating Balor", "Scouring Swarm Balor", "Regenerator Balor", "Liturgycode Goblin", "Reactive Code Goblin", "Fragile Goblin", "Metastatic Paralysis Gorgon", "Gaze Gorgon", "Guardian Gorgon", "System Link Hydra", "Shepherd Field Hydra", "Mimic Carapace Kobold", "Slag Spray Kobold", "Exposed Reactor Kobold", "Soul Vessel Lich", "Immortal Lich (Return to Wreckage instead of Soul Vessel)", "Slag Carapace Manticore", "Unstable System Manticore", "Castigate the Enemies Manticore", "Invert Cockpit Minotaur", "Internal Metafold Minotaur", "Localised Maze Minotaur", "By the Way I know every Pegasus", "Heavy Frame Barbarossa", "Pressure Plating Barbarossa", "Guardian Barbarossa", "Slow Barbarossa", "Insulated Ghengis", "Emergency Vent Ghengis", "Weak Computer Ghengis Mk1", "Insulated Ghengis Mk1", "TBK Munitions Ghengis Mk1", "Assault Launcher Iskander", "Mine Deployer Iskander", "Skeleton Key Iskander", "Heavy Shielding Napoleon", "Flash Aegis Napoleon", "Reinforced Frame Saladin", "Guardian Saladin", "Warp Shield Saladin", "Superior Reactor Sherman", "Marthur Stop Sherman", "Vent Heat Sherman", "Safe Harbor Sunzi", "Anchor Sunzi", "Slip Sunzi", "Limit Break Tokugawa", "Plasma Sheath Tokugawa", "Primal Fury + Talons Enkidu", "All Fours Enkidu", "Brute Strength Enkidu", "Bloodsense Enkidu" ]
+  random_trait = choice(traits)
+  return await message.channel.send(random_trait)
+
+async def get_random_cp(message):
+  cps = [ "Hyper Spec Fuel Injector Everest", "Raise the Banner Sagarmatha", "Omni Harpoon Blackbeard", "Fortress Protocol Drake", "Latch Drone + Supercharger Lancaster", "Engage Drive + Momentum Nelson Lose 1 Trait or Re-Roll this CP", "Mjolnir Cannon + Thunder God Raleigh", "Hyper Reflex Mode Tortuga", "Tormentor Spikes + Shrike Armor Vlad Lose 1 Trait or Re-Roll this CP", "Flayer Shotgun + Equip Autochoke Caliban", "Xiaoli's Tenacity + Xiaoli's Ingenuity Zheng", "Jolly Roger + Skull and Bones Kidd", "Mag Field Black Witch", "Neural Shunt Death's Head", "Hall of Mirrors Dusk Wing", "Tactical Cloak Metal Mark", "Divine Punishment Monarch", "Blinkspace Jump + Stabilize Singularity Mourning Cloak", "Prophetic Interjection Swallowtail", "Grounded + Guerilla Warfare Ranger Swallowtail", "Final Hunt Atlas", "Scouring Swarm + Regeneration + Hive Frenzy Balor Lose 2 Traits or Re-Roll this CP", "Symbiosis Goblin", "Extrude Basilisk Gorgon", "Orochi Drones+Full Deployment Hydra", "Charged Exoskeleton + Destruction of the temple Manticore", "Metafold Maze + Maze Minotaur", "Ushabti Omnigun + Unshackle Ushabti Pegasus", "Terraform Kobold", "Glitch Time Lich", "Apocalypse Rail + Charge Rail Barbarossa", "Expose Powercells Ghengis", "Furiosa + A Pleasure to Burn Ghengis Mk1", "Death Cloud Iskander", "Trueblack Aegis Napoleon", "Tachyon Shield Saladin", "ZF4 Solidcore + Coreburn Protocol Sherman", "Overclock + Radiance Tokugawa", "Crush Limiter Enkidu", "Blink Anchor + Art of War Sunzi" ]
+  random_cp = choice(cps)
+  return await message.channel.send(random_cp)
 
 client.run(os.environ['RALF_JR_DISCORD_TOKEN'])
