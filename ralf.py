@@ -121,6 +121,9 @@ async def on_message(message):
   if message.content.startswith('?random-build'):
     await get_random_build(message)
 
+  if message.content.startswith('?random-frame'):
+    await get_random_mech(message)
+
   if message.content.startswith('?random-mech'):
     await get_random_mech(message)
 
