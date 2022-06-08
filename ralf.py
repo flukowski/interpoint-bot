@@ -62,17 +62,18 @@ async def on_member_join(member):
   general_channel = discord.utils.get(member.guild.channels, name='interpoint-station') or discord.utils.get(member.guild.channels, name='general')
   announce_channel = client.get_channel(734729551388737560)
   rp_channel = client.get_channel(780346906509312060)
+  what_channel = client.get_channel(762884231898071041)
+  rules_channel = client.get_channel(734744137815031809)
+  side_channel = client.get_channel(797929892078813184)
 
   message = 'Hey {0.mention}, welcome to Interpoint Station :tm:\n\n' \
-    'This is a server for playing pick up games of Lancer RPG. Visit Official Stuff all the way up there for the rundown.' \
-    '\n\nGo right ahead and make a LL0 character for our games utilizing Comp/Con app and its cloud feature. https://compcon.app/#/ Then you can apply using the generated pilot code!' \
-    '\n\nApplications open on Sundays for the following week, I generally run 7 games a week which means that there are 28 spots available making it 112 a month.' \
-    '\n\nIf the schedule is full (check {1.mention} to see if it is) you can still apply for reserves for a chance if a pilot goes AWOL or set up a character and join the RP till Sunday when the schedule opens up again.' \
-    '\n\nIf you want to get involved in the RP in this server, head down into {2.mention} and follow the rules to unlock the RP channels.' \
-    '\n\nIf you ever need help, just ask any of us, we\'re pretty friendly.' \
+    'This is a server for playing pick up games of Lancer RPG. Visit {3.mention} for a quick rundown, then check out {4.mention} for instructions on how to play in official Interpoint games.' \
+    '\n\nIn addition to the weekly main missions, members of the Interpoint community sometimes run side games. Visit {5.mention} to learn more about how these games work and sign up for alerts when they happen.' \
+    '\n\nIf you want to get involved in the text-based RP in this server, head down to {2.mention} and follow the rules to unlock the RP channels.' \
+    '\n\nIf you ever need help, just ask any of us! We\'re pretty friendly.' \
     '\n\nWe hope you enjoy your stay at Interpoint Station:tm:'
 
-  await general_channel.send(message.format(member, announce_channel, rp_channel))
+  await general_channel.send(message.format(member, announce_channel, rp_channel, what_channel, rules_channel, side_channel))
 
 @client.event
 async def on_message(message):
