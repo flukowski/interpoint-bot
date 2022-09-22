@@ -105,6 +105,12 @@ async def on_message(message):
   if message.content.startswith('?codes'):
     await get_codes(message)
 
+  if message.content.startswith('?mission-to-cooldown'):
+    await move_in_mission_to_on_cooldown(message)
+
+  if message.content.startswith('?weekly-cooldowns'):
+    await update_weekly_cooldowns(message)
+
   if message.content.startswith('?youtube'):
     await message.channel.send('https://www.youtube.com/channel/UCV88ITZdBYnLpRGDFYXymKA')
 
@@ -452,6 +458,52 @@ def get_applicants():
   users_table = database.child(firebase_namespace).child("users")
   applicants = users_table.get().val()
   return applicants
+
+async def _move_user_to_cooldown_if_in_mission(guild, applicant_key, applicant):
+  applicant_roles = await get_user_roles(guild, applicant_key)
+  if is_in_mission(applicant_roles):
+    print(applicant['name'], flush=True)
+    member = await guild.fetch_member(applicant_key)
+    await asyncio.gather(
+      remove_roles(member, mission_roles),
+      add_role(member, cooldown_roles[1])
+    )
+
+async def move_in_mission_to_on_cooldown(message):
+  if not is_from_admin(message):
+    return await message.channel.send("You are not worthy!")
+
+  applicants = get_applicants()
+
+  print('Setting mission members to cooldown week 1', flush=True)
+  coroutines = []
+  for key, applicant in list(applicants.items()):
+    coroutines.append(_move_user_to_cooldown_if_in_mission(message.author.guild, key, applicant))
+  await asyncio.gather(*coroutines)
+
+  await message.channel.send('New cooldowns set')
+
+async def update_weekly_cooldowns(message):
+  if not is_from_admin(message):
+    return await message.channel.send("You are not worthy!")
+
+  applicants = get_applicants()
+
+  print('Updating weekly cooldowns', flush=True)
+  for key, applicant in list(applicants.items()):
+    applicant_roles = await get_user_roles(message.author.guild, key)
+    if applicant_roles:
+      if cooldown_roles[2] in applicant_roles:
+        member = await message.author.guild.fetch_member(key)
+        await remove_roles(member, [cooldown_roles[2]])
+      elif cooldown_roles[1] in applicant_roles:
+        member = await message.author.guild.fetch_member(key)
+        await asyncio.gather(
+          remove_roles(member, [cooldown_roles[1]]),
+          add_role(member, cooldown_roles[2])
+        )
+  await message.channel.send('New cooldowns set')
+
 async def reset_weight(message):
   author = message.author
   author_roles = list(map(lambda x: x.name, author.roles))
