@@ -6,7 +6,8 @@ import asyncio
 import discord
 import pyrebase
 import collections
-import numpy
+
+from discord import Member, Role
 from numpy.random import choice
 
 intents = discord.Intents.default()
@@ -201,6 +202,15 @@ async def remove_reaction(reaction):
 async def add_mission_reaction(message, number):
   reaction_dict = { '1': "1️⃣", '2': "2️⃣", '3': "3️⃣", '4': "4️⃣", '5': "5️⃣", '6': "6️⃣", '7': "7️⃣"  }
   await message.add_reaction(reaction_dict.get(number))
+
+ADMIN_IDS = [202688077351616512, 550523153302945792]
+
+def is_from_admin(message):
+  return message.author.id in ADMIN_IDS
+
+def is_from_moderator(message):
+  author_roles = list(map(lambda x: x.name, message.author.roles))
+  return 'Moderator' in author_roles
 
 async def evaluate_schedule_random(message):
   if not (message.author.id == 202688077351616512 or message.author.id == 550523153302945792):
@@ -398,6 +408,29 @@ async def get_codes(message):
           continue
 
   await message.channel.send(codes_message)
+
+def is_in_cooldown(applicant_roles):
+  return applicant_roles and set(applicant_roles) & set(cooldown_roles)
+
+def is_in_mission(applicant_roles):
+  return applicant_roles and (set(applicant_roles) & set(mission_roles))
+
+def get_role_from_name(guild, role_name: str):
+  role: Role = discord.utils.get(guild.roles, name=role_name)
+  if not role:
+    raise ValueError(f"Role {role_name} not found")
+  return role
+
+async def remove_roles(member: Member, role_names: list[str]):
+  coroutines = []
+  for role_name in role_names:
+    role: Role = get_role_from_name(member.guild, role_name)
+    coroutines.append(member.remove_roles(role))
+  await asyncio.gather(*coroutines)
+
+async def add_role(member: Member, role_name: str):
+  role = get_role_from_name(member.guild, role_name)
+  await member.add_roles(role)
 
 def get_applicants():
   if IS_DEV_ENV:
