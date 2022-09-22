@@ -12,6 +12,7 @@ from numpy.random import choice
 intents = discord.Intents.default()
 intents.members = True
 intents.messages = True
+intents.message_content = True
 client = discord.Client(intents=intents)
 
 config = {
