@@ -15,11 +15,13 @@ intents.messages = True
 client = discord.Client(intents=intents)
 
 config = {
-  "apiKey": os.environ['INTERPOINT_FIREBASE_API_KEY'],
+  "apiKey": os.environ.get('INTERPOINT_FIREBASE_API_KEY'),
   "authDomain": "interpoint-384c3.firebaseapp.com",
   "databaseURL": "https://interpoint-384c3.firebaseio.com",
   "storageBucket": "interpoint-384c3.appspot.com"
 }
+
+IS_DEV_ENV = config['apiKey'] is None
 
 firebase = pyrebase.initialize_app(config)
 firebase_namespace = os.getenv('FIREBASE_NAMESPACE', default='interpoint-test')
@@ -396,6 +398,26 @@ async def get_codes(message):
 
   await message.channel.send(codes_message)
 
+def get_applicants():
+  if IS_DEV_ENV:
+    QAZZ_ID = 169544927351537664
+    return {
+      f"{QAZZ_ID}": {
+        'author_roles': ['@everyone'],
+        'id': f'{QAZZ_ID}',
+        'mech_token': '#1',
+        'mention': f"<@!{QAZZ_ID}>",
+        'mission_numbers': ['1'],
+        'name': 'Test',
+        'pilot_code': '1234',
+        'weight': 1,
+        'timestamp': 1234567890
+      }
+    }
+
+  users_table = database.child(firebase_namespace).child("users")
+  applicants = users_table.get().val()
+  return applicants
 async def reset_weight(message):
   author = message.author
   author_roles = list(map(lambda x: x.name, author.roles))
