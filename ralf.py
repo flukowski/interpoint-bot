@@ -592,7 +592,8 @@ async def get_user_roles(guild, user_id):
       return list(map(lambda x: x.name, member.roles))
     else:
       return None
-  except:
+  except Exception as e:
+    print(e, flush=True)
     return None
 
 async def get_random_build(message):
