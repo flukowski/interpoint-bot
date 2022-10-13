@@ -6,20 +6,24 @@ import asyncio
 import discord
 import pyrebase
 import collections
-import numpy
+
+from discord import Member, Role
 from numpy.random import choice
 
 intents = discord.Intents.default()
 intents.members = True
 intents.messages = True
+intents.message_content = True
 client = discord.Client(intents=intents)
 
 config = {
-  "apiKey": os.environ['INTERPOINT_FIREBASE_API_KEY'],
+  "apiKey": os.environ.get('INTERPOINT_FIREBASE_API_KEY'),
   "authDomain": "interpoint-384c3.firebaseapp.com",
   "databaseURL": "https://interpoint-384c3.firebaseio.com",
   "storageBucket": "interpoint-384c3.appspot.com"
 }
+
+IS_DEV_ENV = config['apiKey'] is None
 
 firebase = pyrebase.initialize_app(config)
 firebase_namespace = os.getenv('FIREBASE_NAMESPACE', default='interpoint-test')
@@ -100,6 +104,12 @@ async def on_message(message):
 
   if message.content.startswith('?codes'):
     await get_codes(message)
+
+  if message.content.startswith('?mission-to-cooldown'):
+    await move_in_mission_to_on_cooldown(message)
+
+  if message.content.startswith('?weekly-cooldowns'):
+    await update_weekly_cooldowns(message)
 
   if message.content.startswith('?youtube'):
     await message.channel.send('https://www.youtube.com/channel/UCV88ITZdBYnLpRGDFYXymKA')
@@ -198,6 +208,15 @@ async def remove_reaction(reaction):
 async def add_mission_reaction(message, number):
   reaction_dict = { '1': "1️⃣", '2': "2️⃣", '3': "3️⃣", '4': "4️⃣", '5': "5️⃣", '6': "6️⃣", '7': "7️⃣"  }
   await message.add_reaction(reaction_dict.get(number))
+
+ADMIN_IDS = [202688077351616512, 550523153302945792]
+
+def is_from_admin(message):
+  return message.author.id in ADMIN_IDS
+
+def is_from_moderator(message):
+  author_roles = list(map(lambda x: x.name, message.author.roles))
+  return 'Moderator' in author_roles
 
 async def evaluate_schedule_random(message):
   if not (message.author.id == 202688077351616512 or message.author.id == 550523153302945792):
@@ -396,6 +415,95 @@ async def get_codes(message):
 
   await message.channel.send(codes_message)
 
+def is_in_cooldown(applicant_roles):
+  return applicant_roles and set(applicant_roles) & set(cooldown_roles)
+
+def is_in_mission(applicant_roles):
+  return applicant_roles and (set(applicant_roles) & set(mission_roles))
+
+def get_role_from_name(guild, role_name: str):
+  role: Role = discord.utils.get(guild.roles, name=role_name)
+  if not role:
+    raise ValueError(f"Role {role_name} not found")
+  return role
+
+async def remove_roles(member: Member, role_names: list[str]):
+  coroutines = []
+  for role_name in role_names:
+    role: Role = get_role_from_name(member.guild, role_name)
+    coroutines.append(member.remove_roles(role))
+  await asyncio.gather(*coroutines)
+
+async def add_role(member: Member, role_name: str):
+  role = get_role_from_name(member.guild, role_name)
+  await member.add_roles(role)
+
+def get_applicants():
+  if IS_DEV_ENV:
+    QAZZ_ID = 169544927351537664
+    return {
+      f"{QAZZ_ID}": {
+        'author_roles': ['@everyone'],
+        'id': f'{QAZZ_ID}',
+        'mech_token': '#1',
+        'mention': f"<@!{QAZZ_ID}>",
+        'mission_numbers': ['1'],
+        'name': 'Test',
+        'pilot_code': '1234',
+        'weight': 1,
+        'timestamp': 1234567890
+      }
+    }
+
+  users_table = database.child(firebase_namespace).child("users")
+  applicants = users_table.get().val()
+  return applicants
+
+async def _move_user_to_cooldown_if_in_mission(guild, applicant_key, applicant):
+  applicant_roles = await get_user_roles(guild, applicant_key)
+  if is_in_mission(applicant_roles):
+    print(applicant['name'], flush=True)
+    member = await guild.fetch_member(applicant_key)
+    await asyncio.gather(
+      remove_roles(member, mission_roles),
+      add_role(member, cooldown_roles[1])
+    )
+
+async def move_in_mission_to_on_cooldown(message):
+  if not is_from_admin(message):
+    return await message.channel.send("You are not worthy!")
+
+  applicants = get_applicants()
+
+  print('Setting mission members to cooldown week 1', flush=True)
+  coroutines = []
+  for key, applicant in list(applicants.items()):
+    coroutines.append(_move_user_to_cooldown_if_in_mission(message.author.guild, key, applicant))
+  await asyncio.gather(*coroutines)
+
+  await message.channel.send('New cooldowns set')
+
+async def update_weekly_cooldowns(message):
+  if not is_from_admin(message):
+    return await message.channel.send("You are not worthy!")
+
+  applicants = get_applicants()
+
+  print('Updating weekly cooldowns', flush=True)
+  for key, applicant in list(applicants.items()):
+    applicant_roles = await get_user_roles(message.author.guild, key)
+    if applicant_roles:
+      if cooldown_roles[2] in applicant_roles:
+        member = await message.author.guild.fetch_member(key)
+        await remove_roles(member, [cooldown_roles[2]])
+      elif cooldown_roles[1] in applicant_roles:
+        member = await message.author.guild.fetch_member(key)
+        await asyncio.gather(
+          remove_roles(member, [cooldown_roles[1]]),
+          add_role(member, cooldown_roles[2])
+        )
+  await message.channel.send('New cooldowns set')
+
 async def reset_weight(message):
   author = message.author
   author_roles = list(map(lambda x: x.name, author.roles))
@@ -484,7 +592,8 @@ async def get_user_roles(guild, user_id):
       return list(map(lambda x: x.name, member.roles))
     else:
       return None
-  except:
+  except Exception as e:
+    print(e, flush=True)
     return None
 
 async def get_random_build(message):
