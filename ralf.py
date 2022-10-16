@@ -426,14 +426,14 @@ def get_role_from_name(guild, role_name: str):
     raise ValueError(f"Role {role_name} not found")
   return role
 
-async def remove_roles(member: Member, role_names: list[str]):
+async def remove_roles(member, role_names):
   coroutines = []
   for role_name in role_names:
     role: Role = get_role_from_name(member.guild, role_name)
     coroutines.append(member.remove_roles(role))
   await asyncio.gather(*coroutines)
 
-async def add_role(member: Member, role_name: str):
+async def add_role(member, role_name):
   role = get_role_from_name(member.guild, role_name)
   await member.add_roles(role)
 
