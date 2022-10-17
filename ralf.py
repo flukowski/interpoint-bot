@@ -294,15 +294,7 @@ async def evaluate_schedule_random(message):
     print(final_applicants)
 
     schedule = calculate_schedule(final_applicants)
-
-    schedule_message = "Random Schedule evaluated.\n"
-
-    for mission_idx, mission in enumerate(schedule):
-        schedule_message += f"\n\nMission {mission_idx + 1}\n"
-        for spot_idx, spot in enumerate(mission):
-            schedule_message += str(spot and spot["mention"])
-            if spot_idx != 3:
-                schedule_message += ", "
+    schedule_message = f"Random Schedule evaluated.\n{_make_schedule_message(schedule)}"
 
     await message.channel.send(schedule_message)
 
@@ -319,16 +311,19 @@ async def evaluate_schedule_v2(message):
 
     schedule = calculate_schedule(applicants)
 
-    schedule_message = "Schedule evaluated.\n"
+    schedule_message = f"Schedule evaluated.\n{_make_schedule_message(schedule)}"
+    await message.channel.send(schedule_message)
 
+
+def _make_schedule_message(schedule):
+    schedule_message = ""
     for mission_idx, mission in enumerate(schedule):
         schedule_message += f"\n\nMission {mission_idx + 1}\n"
         for spot_idx, spot in enumerate(mission):
             schedule_message += str(spot and spot["mention"])
             if spot_idx != 3:
                 schedule_message += ", "
-
-    await message.channel.send(schedule_message)
+    return schedule_message
 
 
 def calculate_schedule(applicants):
