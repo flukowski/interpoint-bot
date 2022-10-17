@@ -227,11 +227,12 @@ def is_from_admin(message):
   return message.author.id in ADMIN_IDS
 
 def is_from_moderator(message):
+  """Assumes all admins are also moderators, so you dont need to ask 'is admin or mod'"""
   author_roles = list(map(lambda x: x.name, message.author.roles))
-  return 'Moderator' in author_roles
+  return is_from_admin(message) or 'Moderator' in author_roles
 
 async def evaluate_schedule_random(message):
-  if not (message.author.id == 202688077351616512 or message.author.id == 550523153302945792):
+  if not is_from_admin(message):
     return await message.channel.send("You are not worthy!")
 
   applicants = database.child(firebase_namespace).child("users").get().val()
@@ -285,7 +286,7 @@ async def evaluate_schedule_random(message):
   await message.channel.send(schedule_message)
 
 async def evaluate_schedule_v2(message):
-  if not (message.author.id == 202688077351616512 or message.author.id == 550523153302945792):
+  if not is_from_admin(message):
     return await message.channel.send("You are not worthy!")
 
   applicants = database.child(firebase_namespace).child("users").order_by_child("timestamp").get().val()
@@ -402,7 +403,7 @@ def get_mech_token(text):
   return (token, text)
 
 async def get_codes(message):
-  if not (message.author.id == 202688077351616512 or message.author.id == 550523153302945792):
+  if not is_from_admin(message):
     return await message.channel.send("You are not worthy!")
 
   applicants = database.child(firebase_namespace).child("users").get().val()
@@ -517,9 +518,7 @@ async def update_weekly_cooldowns(message):
   await message.channel.send('New cooldowns set')
 
 async def reset_weight(message):
-  author = message.author
-  author_roles = list(map(lambda x: x.name, author.roles))
-  if not (message.author.id == 202688077351616512 or message.author.id == 550523153302945792 or 'Moderator' in author_roles):
+  if not is_from_moderator(message):
     return await message.channel.send("You are not worthy!")
 
   applicants = database.child(firebase_namespace).child("users").get().val()
@@ -535,7 +534,7 @@ async def reset_weight(message):
 
   # Only keep people on cooldown and in missions
   for key in list(applicants.keys()):
-    applicant_roles = await get_user_roles(author.guild, key)
+    applicant_roles = await get_user_roles(message.author.guild, key)
     if applicant_roles:
       if not ((set(applicant_roles) & set(mission_roles)) or (set(applicant_roles) & set(cooldown_roles))):
         del applicants[key]
@@ -550,9 +549,7 @@ async def reset_weight(message):
   await message.channel.send('Weight reset')
 
 async def hard_reset_weight(message):
-  author = message.author
-  author_roles = list(map(lambda x: x.name, author.roles))
-  if not (message.author.id == 202688077351616512 or message.author.id == 550523153302945792 or 'Moderator' in author_roles):
+  if not is_from_moderator(message):
     return await message.channel.send("You are not worthy!")
 
   applicants = database.child(firebase_namespace).child("users").get().val()
@@ -565,9 +562,7 @@ async def hard_reset_weight(message):
   await message.channel.send('Weight hard reset')
 
 async def increase_weight(message):
-  author = message.author
-  author_roles = list(map(lambda x: x.name, author.roles))
-  if not (message.author.id == 202688077351616512 or message.author.id == 550523153302945792 or 'Moderator' in author_roles):
+  if not is_from_moderator(message):
     return await message.channel.send("You are not worthy!")
 
   applicants = database.child(firebase_namespace).child("users").get().val()
@@ -583,7 +578,7 @@ async def increase_weight(message):
 
   # Remove people on cooldown and in missions
   for key in list(applicants.keys()):
-    applicant_roles = await get_user_roles(author.guild, key)
+    applicant_roles = await get_user_roles(message.author.guild, key)
     if applicant_roles:
       if (set(applicant_roles) & set(mission_roles)) or (set(applicant_roles) & set(cooldown_roles)):
         del applicants[key]
