@@ -345,7 +345,7 @@ def calculate_schedule(applicants):
         if len(applicant["mission_numbers"]) == 1:
             single_mission_number = applicant["mission_numbers"][0]
             for idx, spot in enumerate(schedule[int(single_mission_number) - 1]):
-                if spot == None:
+                if spot is None:
                     schedule[int(single_mission_number) - 1][idx] = applicant
                     scheduled = True
                     print(f"Gets into {single_mission_number}", flush=True)
@@ -368,7 +368,7 @@ def calculate_schedule(applicants):
                             for other_idx, other_spot in enumerate(
                                 schedule[int(mission_number) - 1]
                             ):
-                                if other_spot == None:
+                                if other_spot is None:
                                     schedule[int(mission_number) - 1][other_idx] = spot
                                     rescheduled = True
                                     print(
@@ -388,7 +388,7 @@ def calculate_schedule(applicants):
             for mission_number in applicant["mission_numbers"]:
                 if not scheduled:
                     for idx, spot in enumerate(schedule[int(mission_number) - 1]):
-                        if spot == None:
+                        if spot is None:
                             schedule[int(mission_number) - 1][idx] = applicant
                             scheduled = True
                             print(f"Gets into {mission_number}", flush=True)
@@ -442,7 +442,7 @@ def get_mech_token(text):
             token += " "
             text = re.sub(mech_pattern, "X", text)
 
-    return (token, text)
+    return token, text
 
 
 @admin_only
