@@ -327,7 +327,7 @@ def _make_schedule_message(schedule):
 
 
 def calculate_schedule(applicants):
-    schedule = [[None for y in range(4)] for x in range(7)]
+    schedule = [[None for _y in range(4)] for _x in range(7)]
     filled_count = 0
     scheduled = False
 
@@ -352,7 +352,7 @@ def calculate_schedule(applicants):
                     if rescheduled:
                         break
                     other_numbers = None
-                    for mission_number in spot["mission_numbers"]:
+                    for _mission_number in spot["mission_numbers"]:
                         other_numbers = [
                             x
                             for x in spot["mission_numbers"]
