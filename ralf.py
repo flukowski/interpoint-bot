@@ -15,7 +15,7 @@ from generation import (
     get_random_trait,
     get_random_cp,
 )
-from permissions import admin_only, moderator_only
+from permissions import admin_only, moderator_only, QAZZ_ID
 
 intents = discord.Intents.default()
 intents.members = True
@@ -500,7 +500,6 @@ async def add_role(member, role_name):
 
 def get_applicants():
     if IS_DEV_ENV:
-        QAZZ_ID = 169544927351537664
         return {
             f"{QAZZ_ID}": {
                 "author_roles": ["@everyone"],
