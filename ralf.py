@@ -603,5 +603,5 @@ async def get_user_roles(guild, user_id):
     print(e, flush=True)
     return None
 
-
-client.run(os.environ['RALF_JR_DISCORD_TOKEN'])
+if __name__ == '__main__':
+  client.run(os.environ['RALF_JR_DISCORD_TOKEN'])
