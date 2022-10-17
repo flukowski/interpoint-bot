@@ -426,7 +426,7 @@ def get_mech_token(text):
         r"harmon medical organisation collection \d",
         r"39 thieves collection \d",
         r"calavera's bandits collection \d",
-        r"angel vermillion collection \d",
+        r"angel vermilion collection \d",
         r"(token|interest) #?\d{1,2} ?[ab]",  # Interest token numbers
         r"(token|interest) .+ ?[ab]",
         r"#\d{1,2} ?[ab]",
