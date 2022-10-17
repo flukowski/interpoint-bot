@@ -64,23 +64,32 @@ async def on_raw_reaction_add(payload):
       sg_role = discord.utils.get(payload.member.guild.roles, name='Side Game Seeker')
       await payload.member.add_roles(sg_role, reason='Looking for Side Games')
 
+
+class Channel:
+  announcements = client.get_channel(734729551388737560)
+  rp = client.get_channel(780346906509312060)
+  what = client.get_channel(762884231898071041)
+  rules = client.get_channel(734744137815031809)
+  side = client.get_channel(797929892078813184)
+
+
 @client.event
 async def on_member_join(member):
   general_channel = discord.utils.get(member.guild.channels, name='interpoint-station') or discord.utils.get(member.guild.channels, name='general')
-  announce_channel = client.get_channel(734729551388737560)
-  rp_channel = client.get_channel(780346906509312060)
-  what_channel = client.get_channel(762884231898071041)
-  rules_channel = client.get_channel(734744137815031809)
-  side_channel = client.get_channel(797929892078813184)
 
-  message = 'Hey {0.mention}, welcome to Interpoint Station :tm:\n\n' \
-    'This is a server for playing pick up games of Lancer RPG. Visit {3.mention} for a quick rundown, then check out {4.mention} for instructions on how to play in official Interpoint games.' \
-    '\n\nIn addition to the weekly main missions, members of the Interpoint community sometimes run side games. Visit {5.mention} to learn more about how these games work and sign up for alerts when they happen.' \
-    '\n\nIf you want to get involved in the text-based RP in this server, head down to {2.mention} and follow the rules to unlock the RP channels.' \
-    '\n\nIf you ever need help, just ask any of us! We\'re pretty friendly.' \
-    '\n\nWe hope you enjoy your stay at Interpoint Station:tm:'
+  message = f"""\
+Hey {member}, welcome to Interpoint Station :tm:
+  
+This is a server for playing pick up games of Lancer RPG. Visit {Channel.what} for a quick rundown, then check out {Channel.rules} for instructions on how to play in official Interpoint games.
+In addition to the weekly main missions, members of the Interpoint community sometimes run side games. Visit {Channel.side} to learn more about how these games work and sign up for alerts when they happen.
 
-  await general_channel.send(message.format(member, announce_channel, rp_channel, what_channel, rules_channel, side_channel))
+If you want to get involved in the text-based RP in this server, head down to {Channel.rp} and follow the rules to unlock the RP channels.
+
+If you ever need help, just ask any of us! We're pretty friendly.
+
+We hope you enjoy your stay at Interpoint Station:tm:"""
+
+  await general_channel.send(message)
 
 @client.event
 async def on_message(message):
