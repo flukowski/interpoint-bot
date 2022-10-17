@@ -60,6 +60,37 @@ class Channel:
     side = client.get_channel(797929892078813184)
 
 
+ADMIN_IDS = [202688077351616512, 550523153302945792]
+
+
+def is_from_admin(message):
+    return message.author.id in ADMIN_IDS
+
+
+def is_from_moderator(message):
+    """Assumes all admins are also moderators, so you don't need to ask 'is admin or mod'"""
+    author_roles = list(map(lambda x: x.name, message.author.roles))
+    return is_from_admin(message) or "Moderator" in author_roles
+
+
+def admin_only(func):
+    async def wrapper(message):
+        if not is_from_admin(message):
+            return await message.channel.send("You are not worthy! Admin only.")
+        return await func(message)
+
+    return wrapper
+
+
+def moderator_only(func):
+    async def wrapper(message):
+        if not is_from_moderator(message):
+            return await message.channel.send("You are not worthy! Moderator only.")
+        return await func(message)
+
+    return wrapper
+
+
 @client.event
 async def on_ready():
     print(f"ASSUMING DIRECT CONTROL! Taken over {client.user} v2")
@@ -251,23 +282,8 @@ async def add_mission_reaction(message, number):
     await message.add_reaction(reaction_dict.get(number))
 
 
-ADMIN_IDS = [202688077351616512, 550523153302945792]
-
-
-def is_from_admin(message):
-    return message.author.id in ADMIN_IDS
-
-
-def is_from_moderator(message):
-    """Assumes all admins are also moderators, so you don't need to ask 'is admin or mod'"""
-    author_roles = list(map(lambda x: x.name, message.author.roles))
-    return is_from_admin(message) or "Moderator" in author_roles
-
-
+@admin_only
 async def evaluate_schedule_random(message):
-    if not is_from_admin(message):
-        return await message.channel.send("You are not worthy!")
-
     applicants = database.child(firebase_namespace).child("users").get().val()
 
     # Remove applications that are older than 6 days
@@ -321,10 +337,8 @@ async def evaluate_schedule_random(message):
     await message.channel.send(schedule_message)
 
 
+@admin_only
 async def evaluate_schedule_v2(message):
-    if not is_from_admin(message):
-        return await message.channel.send("You are not worthy!")
-
     applicants = (
         database.child(firebase_namespace)
         .child("users")
@@ -461,10 +475,8 @@ def get_mech_token(text):
     return (token, text)
 
 
+@admin_only
 async def get_codes(message):
-    if not is_from_admin(message):
-        return await message.channel.send("You are not worthy!")
-
     applicants = database.child(firebase_namespace).child("users").get().val()
 
     codes_message = ""
@@ -548,10 +560,8 @@ async def _move_user_to_cooldown_if_in_mission(guild, applicant_key, applicant):
         )
 
 
+@admin_only
 async def move_in_mission_to_on_cooldown(message):
-    if not is_from_admin(message):
-        return await message.channel.send("You are not worthy!")
-
     applicants = get_applicants()
 
     print("Setting mission members to cooldown week 1", flush=True)
@@ -565,10 +575,8 @@ async def move_in_mission_to_on_cooldown(message):
     await message.channel.send("New cooldowns set")
 
 
+@admin_only
 async def update_weekly_cooldowns(message):
-    if not is_from_admin(message):
-        return await message.channel.send("You are not worthy!")
-
     applicants = get_applicants()
 
     print("Updating weekly cooldowns", flush=True)
@@ -587,10 +595,8 @@ async def update_weekly_cooldowns(message):
     await message.channel.send("New cooldowns set")
 
 
+@moderator_only
 async def reset_weight(message):
-    if not is_from_moderator(message):
-        return await message.channel.send("You are not worthy!")
-
     applicants = database.child(firebase_namespace).child("users").get().val()
 
     # Remove applications that are older than 30 days
@@ -624,10 +630,8 @@ async def reset_weight(message):
     await message.channel.send("Weight reset")
 
 
+@moderator_only
 async def hard_reset_weight(message):
-    if not is_from_moderator(message):
-        return await message.channel.send("You are not worthy!")
-
     applicants = database.child(firebase_namespace).child("users").get().val()
 
     print("Resetting", flush=True)
@@ -640,10 +644,8 @@ async def hard_reset_weight(message):
     await message.channel.send("Weight hard reset")
 
 
+@moderator_only
 async def increase_weight(message):
-    if not is_from_moderator(message):
-        return await message.channel.send("You are not worthy!")
-
     applicants = database.child(firebase_namespace).child("users").get().val()
 
     # Remove applications that are older than 9 days
