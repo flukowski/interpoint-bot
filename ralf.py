@@ -228,7 +228,7 @@ def is_from_admin(message):
   return message.author.id in ADMIN_IDS
 
 def is_from_moderator(message):
-  """Assumes all admins are also moderators, so you dont need to ask 'is admin or mod'"""
+  """Assumes all admins are also moderators, so you don't need to ask 'is admin or mod'"""
   author_roles = list(map(lambda x: x.name, message.author.roles))
   return is_from_admin(message) or 'Moderator' in author_roles
 
@@ -256,8 +256,8 @@ async def evaluate_schedule_random(message):
   applicant_ids = []
   applicant_weights = []
 
-  for id, applicant in applicants.items():
-    applicant_ids.append(id)
+  for applicant_id, applicant in applicants.items():
+    applicant_ids.append(applicant_id)
     weight = applicant['weight']
     applicant_weights.append(weight)
 
