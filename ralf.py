@@ -401,13 +401,13 @@ def calculate_schedule(applicants):
 
 
 def store_user_data(user, data):
-    object = (
+    user_object = (
         database.child(firebase_namespace).child("users").child(user.id).get().val()
     )
 
-    if object:
-        if "weight" in object:
-            data["weight"] = object["weight"]
+    if user_object:
+        if "weight" in user_object:
+            data["weight"] = user_object["weight"]
 
     print(data, flush=True)
 
