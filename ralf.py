@@ -15,6 +15,7 @@ from generation import (
     get_random_trait,
     get_random_cp,
 )
+from permissions import admin_only, moderator_only
 
 intents = discord.Intents.default()
 intents.members = True
@@ -58,37 +59,6 @@ class Channel:
     what = client.get_channel(762884231898071041)
     rules = client.get_channel(734744137815031809)
     side = client.get_channel(797929892078813184)
-
-
-ADMIN_IDS = [202688077351616512, 550523153302945792]
-
-
-def is_from_admin(message):
-    return message.author.id in ADMIN_IDS
-
-
-def is_from_moderator(message):
-    """Assumes all admins are also moderators, so you don't need to ask 'is admin or mod'"""
-    author_roles = list(map(lambda x: x.name, message.author.roles))
-    return is_from_admin(message) or "Moderator" in author_roles
-
-
-def admin_only(func):
-    async def wrapper(message):
-        if not is_from_admin(message):
-            return await message.channel.send("You are not worthy! Admin only.")
-        return await func(message)
-
-    return wrapper
-
-
-def moderator_only(func):
-    async def wrapper(message):
-        if not is_from_moderator(message):
-            return await message.channel.send("You are not worthy! Moderator only.")
-        return await func(message)
-
-    return wrapper
 
 
 @client.event
