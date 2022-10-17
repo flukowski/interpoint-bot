@@ -51,7 +51,7 @@ cooldown_roles = [
 
 @client.event
 async def on_ready():
-  print('ASSUMING DIRECT CONTROL! Taken over {0.user} v2'.format(client))
+  print(f'ASSUMING DIRECT CONTROL! Taken over {client.user} v2')
 
 @client.event
 async def on_raw_reaction_add(payload):
@@ -320,7 +320,7 @@ def calculate_schedule(applicants):
         if spot == None:
           schedule[int(single_mission_number) - 1][idx] = applicant
           scheduled = True
-          print('Gets into {0}'.format(single_mission_number), flush=True)
+          print(f'Gets into {single_mission_number}', flush=True)
           filled_count += 1
           break
       if not scheduled:
@@ -337,12 +337,12 @@ def calculate_schedule(applicants):
                 if other_spot == None:
                   schedule[int(mission_number) - 1][other_idx] = spot
                   rescheduled = True
-                  print('Pushes {0} to {1}'.format(spot['name'], mission_number), flush=True)
+                  print(f"Pushes {spot['name']} to {mission_number}", flush=True)
                   break
               if rescheduled:
                 schedule[int(single_mission_number) - 1][idx] = applicant
                 scheduled = True
-                print('Gets into {0}'.format(single_mission_number), flush=True)
+                print(f'Gets into {single_mission_number}', flush=True)
                 filled_count += 1
                 break
     else:
@@ -352,7 +352,7 @@ def calculate_schedule(applicants):
             if spot == None:
               schedule[int(mission_number) - 1][idx] = applicant
               scheduled = True
-              print('Gets into {0}'.format(mission_number), flush=True)
+              print(f'Gets into {mission_number}', flush=True)
               filled_count += 1
               break
 
