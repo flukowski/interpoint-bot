@@ -49,6 +49,14 @@ cooldown_roles = [
   "Cooldown Week 3 (of 3)",
 ]
 
+class Channel:
+  announcements = client.get_channel(734729551388737560)
+  rp = client.get_channel(780346906509312060)
+  what = client.get_channel(762884231898071041)
+  rules = client.get_channel(734744137815031809)
+  side = client.get_channel(797929892078813184)
+
+
 @client.event
 async def on_ready():
   print(f'ASSUMING DIRECT CONTROL! Taken over {client.user} v2')
@@ -57,20 +65,13 @@ async def on_ready():
 async def on_raw_reaction_add(payload):
   if payload.emoji.name == '✅':
     channel = client.get_channel(payload.channel_id)
-    if channel.id == 780346906509312060:
+    if channel.id == Channel.rp.id:
       rp_role = discord.utils.get(payload.member.guild.roles, name='Role-Player')
       await payload.member.add_roles(rp_role, reason='Agreed to RP Etiquette')
-    if channel.id == 797929892078813184:
+    if channel.id == Channel.side.id:
       sg_role = discord.utils.get(payload.member.guild.roles, name='Side Game Seeker')
       await payload.member.add_roles(sg_role, reason='Looking for Side Games')
 
-
-class Channel:
-  announcements = client.get_channel(734729551388737560)
-  rp = client.get_channel(780346906509312060)
-  what = client.get_channel(762884231898071041)
-  rules = client.get_channel(734744137815031809)
-  side = client.get_channel(797929892078813184)
 
 
 @client.event
