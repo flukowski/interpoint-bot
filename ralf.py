@@ -62,7 +62,7 @@ async def on_raw_reaction_add(payload):
 
 @client.event
 async def on_member_join(member):
-  general_channel = discord.utils.get(member.guild.channels, name='interpoint-station') or discord.utils.get(member.guild.channels, name='general')
+  general_channel = discord.utils.get(member.guild.channels, name='the-interpoint') or discord.utils.get(member.guild.channels, name='general')
   announce_channel = client.get_channel(734729551388737560)
   rp_channel = client.get_channel(780346906509312060)
   what_channel = client.get_channel(762884231898071041)
@@ -83,7 +83,7 @@ async def on_message(message):
   if message.author == client.user:
     return
 
-  if message.channel.name == 'pilot-application':
+  if message.channel.id == 734732123927216188:
     await handle_pilot_application(message)
 
   if message.content.startswith('?schedule'):
@@ -169,7 +169,7 @@ async def on_raw_message_edit(payload):
   await handle_pilot_application(message)
 
 async def handle_pilot_application(message):
-  if message.channel.name == 'pilot-application':
+  if message.channel.id == 734732123927216188:
     author = message.author
     if author.id == 550523153302945792:
       return
