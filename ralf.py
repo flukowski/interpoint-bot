@@ -143,23 +143,24 @@ async def on_message(message):
   if message.content.startswith('?random-cp'):
     await get_random_cp(message)
 
-  cowboy_content = [
-    'cowboy',
-    'terminator',
-    'high noon'
+  wolf_content = [
+    'blue wolf',
+    'blue wolves',
+    'wolf',
+    'wolves',
   ]
 
-  if any(reference in message.content.lower() for reference in cowboy_content):
-    await message.add_reaction("<:Cowboy:749333761585578004>")
+  if any(reference in message.content.lower() for reference in wolf_content):
+    await message.add_reaction("<:BlueWolf:1085902932387569755>")
 
-  cowboy_content = [
-    'cube',
-    'c.u.b.e',
-    'c u b e'
+  serpent_content = [
+    'red serpent',
+    'red serpents',
+    'serpent',
   ]
 
-  if any(reference in message.content.lower() for reference in cowboy_content):
-    await message.add_reaction("<:cube:744345789802741900>")
+  if any(reference in message.content.lower() for reference in serpent_content):
+    await message.add_reaction("<:RedSerpent:1085902909604114532>")
 
 @client.event
 async def on_raw_message_edit(payload):
