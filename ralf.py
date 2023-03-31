@@ -13,7 +13,7 @@ from numpy.random import choice
 intents = discord.Intents.default()
 intents.members = True
 intents.messages = True
-client = discord.Client(intents=intents)
+client = discord.Client(intents=intents, guild_subscriptions=True)
 
 config = {
   "apiKey": os.environ.get('INTERPOINT_FIREBASE_API_KEY'),
@@ -63,11 +63,11 @@ async def on_raw_reaction_add(payload):
 @client.event
 async def on_member_join(member):
   general_channel = discord.utils.get(member.guild.channels, name='the-interpoint') or discord.utils.get(member.guild.channels, name='general')
-  announce_channel = client.get_channel(734729551388737560)
+  announce_channel = client.get_channel(734732123927216188)
   rp_channel = client.get_channel(780346906509312060)
-  what_channel = client.get_channel(762884231898071041)
-  rules_channel = client.get_channel(734744137815031809)
-  side_channel = client.get_channel(797929892078813184)
+  what_channel = client.get_channel(1086978317846065222)
+  rules_channel = client.get_channel(1086978317846065222)
+  side_channel = client.get_channel(1085673587362508800)
 
   message = 'Hey {0.mention}, welcome to Interpoint Station :tm:\n\n' \
     'This is a server for playing pick up games of Lancer RPG. Visit {3.mention} for a quick rundown, then check out {4.mention} for instructions on how to play in official Interpoint games.' \
